@@ -11,5 +11,5 @@ class Quote(models.Model):
     votes_up = models.IntegerField(default=0)
     votes_down = models.IntegerField(default=0)
     rank = models.FloatField(default=0)
-    visible = models.BooleanField(default=True)
+    visible = models.BooleanField(default=False)
     beta = models.BooleanField(default=True)

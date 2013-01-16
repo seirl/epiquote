@@ -24,6 +24,12 @@ class SearchForm(forms.Form):
         return q
 
 
+class AddQuoteForm(forms.Form):
+    author = forms.CharField(label="Auteur")
+    context = forms.CharField(label="Contexte", required=False)
+    content = forms.CharField(widget=forms.Textarea, label="")
+
+
 def template_processor(request):
     return {
         'quotes_search_form': SearchForm(),
@@ -83,4 +89,21 @@ def search_quotes(request):
 
 @login_required
 def add_quote(request):
-    pass
+    print type(request.user)
+    if request.method == 'POST':
+        form = AddQuoteForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            quote = Quote(author=cd['author'], context=cd['context'],
+                    content=cd['content'], user=request.user)
+            quote.save()
+            return HttpResponseRedirect('/add_confirm')
+    else:
+        form = AddQuoteForm()
+    return render(request, 'add.html', {'name_page':
+        u'Ajouter une citation', 'add_form': form})
+
+@login_required
+def add_confirm(request):
+    return render(request, 'add_confirm.html', {'name_page':
+            'Ajouter une citation'})
