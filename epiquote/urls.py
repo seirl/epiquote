@@ -13,4 +13,5 @@ urlpatterns = patterns('',
     url(r'^add$', views.add_quote),
     url(r'^add_confirm$', views.add_confirm),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/', include('registration.backends.default.urls')),
 )

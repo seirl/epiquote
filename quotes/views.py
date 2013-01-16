@@ -39,7 +39,7 @@ def template_processor(request):
 def get_quotes(only_visible=True, order='-date'):
     quotes = Quote.objects.order_by(order).filter(accepted=True)
     if only_visible:
-        quotes.filter(visible=True)
+        quotes = quotes.filter(visible=True)
     return quotes
 
 

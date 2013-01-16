@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Enregistrement</h1>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="S'enregistrer" />
+    </table>
+{% endblock %}
