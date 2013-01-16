@@ -1,0 +1,10 @@
+{% for quote in quotes %}
+  <div>
+    <p><strong>{{ quote.author }} :</strong></p>
+    {% if quote.context %}
+      <p><em>Contexte : {{ quote.context }}</em></p>
+    {% endif %}
+    {{ quote.content|linebreaks }}
+    {% if not forloop.last %}<hr />{% endif %}
+  </div>
+{% endfor %}

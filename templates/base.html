@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{% if name_page %}{{ name_page }} - {% endif %}Epiquote</title>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    {% include "menu.html" %}
+    {% block content %}{% endblock %}
+  </body>
+</html>
+
