@@ -68,12 +68,12 @@ def search_quotes(request):
         raise Http404()
     query = f.cleaned_data['q']
     quotes = get_quotes()
-    terms = map(lambda s: u' {0} '.format(s.decode('utf-8')),
+    terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(s.decode('utf-8')),
             shlex.split(query.encode('utf-8')))
     for w in terms:
-        f = (Q(content__icontains=w)
-           | Q(context__icontains=w)
-           | Q(author__icontains=w))
+        f = (Q(content__regex=w)
+           | Q(context__regex=w)
+           | Q(author__regex=w))
         quotes = quotes.filter(f)
     if not quotes:
         raise Http404()
