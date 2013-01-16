@@ -1,8 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}{{ name_page }}{% endblock %}
-
 {% block content %}
-<h1>{{ name_page }}</h1>
 {% include "list.html" with quotes=quotes %}
 {% endblock %}

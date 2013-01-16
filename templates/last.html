@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if prev_page != None %}
+    <a href="/last/{{ prev_page }}">← Page précédente</a>
+  {% endif %}
+  <form method="GET" action="/last">
+    (page <input type="text" name="g" value="{{ page }}" /> sur
+    {{ max_page }})
+  </form>
+  {% if next_page != None %}
+    <a href="/last/{{ next_page }}">Page suivante →</a>
+  {% endif %}
+  {% include "list.html" with quotes=quotes %}
+{% endblock %}
