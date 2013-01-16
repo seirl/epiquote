@@ -37,8 +37,9 @@ def template_processor(request):
 
 
 def get_quotes(only_visible=True, order='-date'):
-    quotes = Quote.objects.order_by(order).filter(beta=False,
-            visible=only_visible)
+    quotes = Quote.objects.order_by(order).filter(accepted=True)
+    if only_visible:
+        quotes.filter(visible=True)
     return quotes
 
 
@@ -76,11 +77,13 @@ def search_quotes(request):
     quotes = get_quotes()
     terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(s.decode('utf-8')),
             shlex.split(query.encode('utf-8')))
+    f = Q()
     for w in terms:
-        f = (Q(content__regex=w)
-           | Q(context__regex=w)
-           | Q(author__regex=w))
-        quotes = quotes.filter(f)
+        f |= (Q(content__regex=w)
+                | Q(context__regex=w)
+                | Q(author__regex=w))
+
+    quotes = quotes.filter(f)
     if not quotes:
         raise Http404()
     return render(request, 'simple.html', {'name_page':
@@ -102,6 +105,7 @@ def add_quote(request):
         form = AddQuoteForm()
     return render(request, 'add.html', {'name_page':
         u'Ajouter une citation', 'add_form': form})
+
 
 @login_required
 def add_confirm(request):
