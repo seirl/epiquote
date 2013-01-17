@@ -1,3 +1,4 @@
 django
 django-requirements
 django-bootstrap-form
+django-voting

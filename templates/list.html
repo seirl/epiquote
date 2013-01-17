@@ -1,9 +1,18 @@
+{% load voting_tags %}
+
 <table class="table-striped">
   {% for quote in quotes %}
     <tr>
       <td>
         <blockquote>
           <p><small style="font-size: 0.9em;">
+            {% score_for_object quote as score %}
+            {{ score }}
+            <ul>
+                <li><a href="#" onclick="vote('{{ quote.id }}', 'up');">I like it!</a></li>
+                <li><a href="#" onclick="vote('{{ quote.id }}', 'down');">I hate it!</a></li>
+                <li><a href="#" onclick="vote('{{ quote.id }}', 'clear');">I take it back! Clear my vote.</a></li>
+            </ul>
             <strong>{{ quote.author }}</strong>
             {% if quote.context %}(<em>{{ quote.context }}</em>){% endif %}
           </small></p>

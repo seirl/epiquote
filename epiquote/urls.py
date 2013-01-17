@@ -1,8 +1,17 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from voting.views import vote_on_object
+from quotes.models import Quote
 from quotes import views
 
 admin.autodiscover()
+
+quote_dict = {
+    'model': Quote,
+    'template_object_name': 'quote',
+    'slug_field': 'id',
+    'allow_xmlhttprequest': 'true',
+}
 
 urlpatterns = patterns('',
     url(r'^$', views.last_quotes),
@@ -19,4 +28,6 @@ urlpatterns = patterns('',
             'form_class': views.UserRegistrationForm
         }),
     url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^(?P<object_id>[-\w]+)/(?P<direction>up|down|clear)vote/?$',
+        vote_on_object, quote_dict, name="quote-voting"),
 )
