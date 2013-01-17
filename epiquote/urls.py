@@ -11,6 +11,7 @@ quote_dict = {
     'model': Quote,
     'template_object_name': 'quote',
     'allow_xmlhttprequest': True,
+    'template_name': 'quote_confirm_vote.html'
 }
 
 urlpatterns = patterns('',

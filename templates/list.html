@@ -1,23 +1,33 @@
 {% load voting_tags %}
+{% votes_by_user user on quotes as vote_dict %}
+
 
 <table class="table-striped">
   {% for quote in quotes %}
+    {% score_for_object quote as score %}
+    {% dict_entry_for_item quote from vote_dict as vote %}
     <tr>
       <td>
         <blockquote>
           <p><small style="font-size: 0.9em;">
-            {% score_for_object quote as score %}
-            {{ score }}
-            <ul>
-                <li><a href="#" onclick="vote('{{ quote.id }}', 'up');">I like it!</a></li>
-                <li><a href="#" onclick="vote('{{ quote.id }}', 'down');">I hate it!</a></li>
-                <li><a href="#" onclick="vote('{{ quote.id }}', 'clear');">I take it back! Clear my vote.</a></li>
-            </ul>
             <strong>{{ quote.author }}</strong>
             {% if quote.context %}(<em>{{ quote.context }}</em>){% endif %}
           </small></p>
           {{ quote.content|linebreaks }}
         </blockquote>
+        <p style="margin-left: 20px;">
+        <small>
+          Score : <span id="s{{ quote.id }}">{{ score.score }}</span>
+          (<span id="t{{ quote.id }}">{{ score.num_votes }}</span>
+          vote{{ score.num_votes|pluralize }})
+          {% if user.is_authenticated and not vote %}
+            <span id="d{{ quote.id }}"> − 
+              <a onclick="vote('{{ quote.id }}', 'up');">(+)</a>  
+              <a onclick="vote('{{ quote.id }}', 'down');">(-)</a>
+            </span>
+          {% endif %}
+        </small>
+        </p>
       </td>
     </tr>
   {% endfor %}
