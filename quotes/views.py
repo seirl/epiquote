@@ -7,7 +7,13 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django import forms
 from django.http import Http404, HttpResponseRedirect
+from django.contrib.sites.models import RequestSite
+from django.contrib.sites.models import Site
+from registration.backends import default
+from registration import signals
+from registration.models import RegistrationProfile
 import shlex
+import re
 
 NUMBER_PER_PAGE = 30
 
@@ -28,6 +34,41 @@ class AddQuoteForm(forms.Form):
     author = forms.CharField(label="Auteur")
     context = forms.CharField(label="Contexte", required=False)
     content = forms.CharField(widget=forms.Textarea, label="")
+
+
+class UserRegistrationForm(forms.Form):
+    username = forms.Charfield(max_length=8)
+    password1 = forms.CharField(widget=forms.PasswordInput(),
+            label="Mot de passe")
+    password2 = forms.CharField(widget=forms.PasswordInput(),
+            label="Vérification du mot de passe")
+
+    def clean_password(self):
+        if self.data['password1'] != self.data['password2']:
+            raise forms.ValidationError(
+                    'Les mots de passe ne correspondent pas')
+        return self.data['password1']
+
+    def clean_username(self):
+        if not re.match('[a-zA-Z0-9]*', self.data['username']):
+            raise forms.ValidationError("Ce login n'est pas valide")
+        return self.data['username']
+
+
+class Backend(default.DefaultBackend):
+    def register(self, request, **kwargs):
+        username, password = kwargs['username'], kwargs['password1']
+        email = username + '@epita.fr'
+        if Site._meta.installed:
+            site = Site.objects.get_current()
+        else:
+            site = RequestSite(request)
+        new_user = RegistrationProfile.objects.create_inactive_user(username,
+                email, password, site)
+        signals.user_registered.send(sender=self.__class__,
+                                     user=new_user,
+                                     request=request)
+        return new_user
 
 
 def template_processor(request):
