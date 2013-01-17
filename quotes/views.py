@@ -13,9 +13,8 @@ from django.contrib.sites.models import Site
 from registration.backends import default
 from registration import signals
 from registration.models import RegistrationProfile
-import shlex
 import re
-
+import itertools
 
 NUMBER_PER_PAGE = 30
 
@@ -116,19 +115,24 @@ def random_quotes(request):
 
 
 def search_quotes(request):
+    def quotes_split(s):
+        l = map((lambda x: x.strip()), s.split('"'))
+        l = [[e] if i%2 else e.split() for i, e in enumerate(l)]
+        return filter(bool, itertools.chain(*l))
+
     f = SearchForm(request.GET)
     if not f.is_valid():
         raise Http404()
-    query = f.cleaned_data['q']
-    quotes = get_quotes()
-    terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(s.decode('utf-8')),
-            shlex.split(query.encode('utf-8')))
+    q = f.cleaned_data['q']
+    terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(s), quotes_split(q))
+    if not terms:
+        raise Http404()
     f = Q()
     for w in terms:
         f |= (Q(content__regex=w)
                 | Q(context__regex=w)
                 | Q(author__regex=w))
-
+    quotes = get_quotes()
     quotes = quotes.filter(f)
     if not quotes:
         raise Http404()
