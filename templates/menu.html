@@ -1,4 +1,9 @@
 <a href="/random">Citations au hasard</a>
 <a href="/last">Dernières citations</a>
 <a href="/add">Ajouter une citation</a>
+{% if user.is_authenticated %}
+    <a href="/accounts/logout">Se déconnecter</a>
+{% else %}
+    <a href="/accounts/login">Se connecter</a>
+{% endif %}
 {% include "search.html" %}
