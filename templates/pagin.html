@@ -2,13 +2,13 @@
   {% if prev_page == None %}
     <button class="btn btn-info disabled">←</button>
   {% else %}
-    <a class="btn btn-info" href="{{ pages_url }}{{ prev_page }}">←</a>
+    <a class="btn btn-info" href="{{ pages_url }}/{{ prev_page }}">←</a>
   {% endif %}
   <input type="text" class="span1" name="p" value="{{ page }}" />
   <span class="add-on">sur {{ max_page }}</span>
   {% if next_page == None %}
     <button class="btn btn-info disabled">→</button>
   {% else %}
-    <a class="btn btn-info" href="{{ pages_url }}{{ next_page }}">→</a>
+    <a class="btn btn-info" href="{{ pages_url }}/{{ next_page }}">→</a>
   {% endif %}
 </form>
