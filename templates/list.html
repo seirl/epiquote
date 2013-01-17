@@ -1,10 +1,16 @@
-{% for quote in quotes %}
-  <div>
-    <p><strong>{{ quote.author }} :</strong></p>
-    {% if quote.context %}
-      <p><em>Contexte : {{ quote.context }}</em></p>
-    {% endif %}
-    {{ quote.content|linebreaks }}
-    {% if not forloop.last %}<hr />{% endif %}
-  </div>
-{% endfor %}
+<table class="table-striped">
+  {% for quote in quotes %}
+    <tr>
+      <td>
+        <blockquote>
+          <p><small style="font-size: 0.9em;">
+            <strong>{{ quote.author }}</strong>
+            {% if quote.context %}(<em>{{ quote.context }}</em>){% endif %}
+          </small></p>
+          {{ quote.content|linebreaks }}
+        </blockquote>
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+

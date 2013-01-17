@@ -1,11 +1,15 @@
 {% extends "base.html" %}
+{% load bootstrap %}
 
+{% block title %}Ajouter une citation{% endblock %}
 {% block content %}
-  <form method="POST" action="">
+  <form class="form-horizontal" method="POST" action="">
     {% csrf_token %}
-    <table>
-      {{ add_form.as_table }}
-    </table>
-    <input type="submit" value="Soumettre" />
+    {{ add_form|bootstrap }}
+    <div class="control-group">
+      <div class="controls">
+        <input class="btn btn-large" type="submit" value="Soumettre" />
+      </div>
+    </div>
   </form>
 {% endblock %}

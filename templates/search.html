@@ -1,4 +1,7 @@
-<form method="GET" action="/search">
-  {{ quotes_search_form.q }}
-  <input type="submit" value="Rechercher" />
+<form class="navbar-form pull-right form-search" method="GET" action="/search">
+  <div class="input-append">
+      <input type="text" style="height:auto" class="span3 search-query"
+      name="q" />
+    <input type="submit" class="btn" value="Rechercher" />
+  </div>
 </form>

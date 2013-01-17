@@ -1,15 +1,14 @@
 {% extends "base.html" %}
 
+{% block title %}Dernières citations{% endblock %}
 {% block content %}
-  {% if prev_page != None %}
-    <a href="/last/{{ prev_page }}">← Page précédente</a>
-  {% endif %}
-  <form method="GET" action="/last">
-    (page <input type="text" name="p" value="{{ page }}" /> sur
-    {{ max_page }})
-  </form>
-  {% if next_page != None %}
-    <a href="/last/{{ next_page }}">Page suivante →</a>
-  {% endif %}
-  {% include "list.html" with quotes=quotes %}
+  <div class="span2 offset4 input-prepend input-append">
+    {% include "pagin.html" with pages_url="/last/" %}
+  </div>
+  <div class="span12">
+    {% include "list.html" with quotes=quotes %}
+  </div>
+  <div class="span2 offset4 input-prepend input-append">
+    {% include "pagin.html" with pages_url="/last/" %}
+  </div>
 {% endblock %}

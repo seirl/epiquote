@@ -1,10 +1,21 @@
-<a href="/random">Citations au hasard</a>
-<a href="/last">Dernières citations</a>
-<a href="/add">Ajouter une citation</a>
-{% if user.is_authenticated %}
-    <a href="/accounts/logout">Se déconnecter</a>
-{% else %}
-    <a href="/accounts/login">Se connecter</a>
-    <a href="/accounts/register">Créer un compte</a>
-{% endif %}
-{% include "search.html" %}
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/">Epiquote</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li><a href="/random">Au hasard</a></li>
+          <li><a href="/last">Dernières</a></li>
+          <li><a href="/add">Ajouter</a></li>
+          {% if user.is_authenticated %}
+            <li><a href="/accounts/logout">Déconnexion</a></li>
+          {% else %}
+            <li><a href="/accounts/login">Connexion</a></li>
+            <li><a href="/accounts/register">Inscription</a></li>
+          {% endif %}
+        </ul>
+        {% include "search.html" %}
+      </div>
+    </div>
+  </div>
+</div>

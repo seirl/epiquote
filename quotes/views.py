@@ -35,7 +35,8 @@ class SearchForm(forms.Form):
 class AddQuoteForm(forms.Form):
     author = forms.CharField(label="Auteur")
     context = forms.CharField(label="Contexte", required=False)
-    content = forms.CharField(widget=forms.Textarea, label="")
+    content = forms.CharField(widget=forms.Textarea(attrs={
+      'style':'width: 500px; heigth: 200px;'}), label="")
 
 
 class UserRegistrationForm(forms.Form):
@@ -45,15 +46,15 @@ class UserRegistrationForm(forms.Form):
     password2 = forms.CharField(widget=forms.PasswordInput(),
             label="Vérification du mot de passe")
 
-    def clean_password(self):
+    def clean_password2(self):
         if self.data['password1'] != self.data['password2']:
             raise forms.ValidationError(
-                    'Les mots de passe ne correspondent pas')
+                    'Les mots de passe ne correspondent pas.')
         return self.data['password1']
 
     def clean_username(self):
-        if not re.match('[a-zA-Z0-9]*', self.data['username']):
-            raise forms.ValidationError("Ce login n'est pas valide")
+        if not re.match('^[a-zA-Z0-9_]{0,8}$', self.data['username']):
+            raise forms.ValidationError("Ce login n'est pas valide.")
         if User.objects.filter(username=self.data['username']).exists():
             raise forms.ValidationError('Ce login est déjà enregistré.')
         return self.data['username']

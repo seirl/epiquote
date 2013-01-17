@@ -1,13 +1,16 @@
 {% extends "base.html" %}
+{% load bootstrap %}
 
+{% block title %}Connexion{% endblock %}
 {% block content %}
-  <h1>Connexion</h1>
-  <form method="POST" action="">
+  <form method="POST" action="" class="form-horizontal">
     {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-    </table>
-    <input type="submit" value="Se connecter" />
     <input type="hidden" name="next" value="{{ next }}" />
+    {{ form|bootstrap }}
+    <div class="control-group">
+      <div class="controls">
+        <input type="submit" class="btn btn-large" value="Se connecter" />
+      </div>
+    </div>
   </form>
 {% endblock %}
