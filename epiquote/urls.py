@@ -13,5 +13,10 @@ urlpatterns = patterns('',
     url(r'^add$', views.add_quote),
     url(r'^add_confirm$', views.add_confirm),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/register/$', 'registration.views.register',
+        {
+            'backend': 'quotes.views.Backend',
+            'form_class': views.UserRegistrationForm
+        }),
     url(r'^accounts/', include('registration.backends.default.urls')),
 )

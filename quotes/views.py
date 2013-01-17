@@ -2,11 +2,12 @@
 # -*- encoding: utf-8 -*-
 
 from models import Quote
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 from django import forms
+from django.shortcuts import render
+from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib.sites.models import RequestSite
 from django.contrib.sites.models import Site
 from registration.backends import default
@@ -14,6 +15,7 @@ from registration import signals
 from registration.models import RegistrationProfile
 import shlex
 import re
+
 
 NUMBER_PER_PAGE = 30
 
@@ -37,7 +39,7 @@ class AddQuoteForm(forms.Form):
 
 
 class UserRegistrationForm(forms.Form):
-    username = forms.Charfield(max_length=8)
+    username = forms.CharField(max_length=8, label='Login EPITA')
     password1 = forms.CharField(widget=forms.PasswordInput(),
             label="Mot de passe")
     password2 = forms.CharField(widget=forms.PasswordInput(),
@@ -52,6 +54,8 @@ class UserRegistrationForm(forms.Form):
     def clean_username(self):
         if not re.match('[a-zA-Z0-9]*', self.data['username']):
             raise forms.ValidationError("Ce login n'est pas valide")
+        if User.objects.filter(username=self.data['username']).exists():
+            raise forms.ValidationError('Ce login est déjà enregistré.')
         return self.data['username']
 
 
