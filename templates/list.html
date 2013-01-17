@@ -16,8 +16,7 @@
           {{ quote.content|linebreaks }}
         </blockquote>
         <p style="margin-left: 20px;">
-        <small>
-          Score : <span id="s{{ quote.id }}">{{ score.score }}</span>
+        <small>Score : <span id="s{{ quote.id }}">{{ score.score }}</span>
           (<span id="t{{ quote.id }}">{{ score.num_votes }}</span>
           vote{{ score.num_votes|pluralize }})
           {% if user.is_authenticated and not vote %}

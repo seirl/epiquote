@@ -4,14 +4,28 @@
       <a class="brand" href="/">Epiquote</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
-          <li><a href="/random">Au hasard</a></li>
-          <li><a href="/last">Dernières</a></li>
-          <li><a href="/add">Ajouter</a></li>
+          <li class="{% if request.path == "/random" %}active{% endif %}">
+          <a href="/random">Au hasard</a>
+          </li>
+          <li class="
+          {% if request.path|slice:":5" == "/last" %}active{% endif %}">
+          <a href="/last">Dernières</a>
+          </li>
+          <li class="{% if request.path == "/add" %}active{% endif %}">
+          <a href="/add">Ajouter</a>
+          </li>
           {% if user.is_authenticated %}
-            <li><a href="/accounts/logout">Déconnexion</a></li>
+            <li class="
+            {% if request.path == "/accounts/logout" %}active{% endif %}">
+            <a href="/accounts/logout">Déconnexion</a></li>
           {% else %}
-            <li><a href="/accounts/login">Connexion</a></li>
-            <li><a href="/accounts/register">Inscription</a></li>
+            <li class="
+            {% if request.path == "/accounts/login/" %}
+            active{% endif %}">
+              <a href="/accounts/login">Connexion</a></li>
+            <li class="
+            {% if request.path == "/accounts/register/" %}active{% endif %}">
+            <a href="/accounts/register">Inscription</a></li>
           {% endif %}
         </ul>
         {% include "search.html" %}
