@@ -129,9 +129,9 @@ def search_quotes(request):
         raise Http404()
     f = Q()
     for w in terms:
-        f |= (Q(content__regex=w)
-                | Q(context__regex=w)
-                | Q(author__regex=w))
+        f |= (Q(content__iregex=w)
+                | Q(context__iregex=w)
+                | Q(author__iregex=w))
     quotes = get_quotes()
     quotes = quotes.filter(f)
     if not quotes:
