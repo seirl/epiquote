@@ -15,7 +15,7 @@ quote_dict = {
 }
 
 urlpatterns = patterns('',
-    url(r'^$', views.last_quotes),
+    url(r'^$', views.home),
     url(r'^last$', views.last_quotes),
     url(r'^last/(\d+)$', views.last_quotes),
     url(r'^top$', views.top_quotes),

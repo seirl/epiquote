@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Bienvenue sur Epiquote !{% endblock %}
+{% block content %}
+  <p>Epiquote recense les citations en tout genre des enseignants et des élèves
+  de l'EPITA. Un professeur devient fou ? Une conversation sur IRC doit rester
+  gravée à jamais ? N'hésitez pas à soumettre une citation !</p>
+  <div class="row">
+    <div class="span6">
+      <h2>Dernières</h2>
+      {% include "list.html" with quotes=last %}
+    </div>
+    <div class="span6">
+      <h2>Meilleures</h2>
+      {% include "list.html" with quotes=top %}
+    </div>
+  </div>
+{% endblock %}

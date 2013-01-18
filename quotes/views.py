@@ -128,6 +128,10 @@ def flop_quotes(request):
     return render(request, 'simple.html', dict(
         {'name_page': 'Pires citations', 'quotes': quotes}))
 
+def home(request):
+    last = get_quotes()[:5]
+    top = [x for x, y in Vote.objects.get_top(Quote, limit=5)]
+    return render(request, 'home.html', {'top': top, 'last': last})
 
 def random_quotes(request):
     quotes = split_quotes(get_quotes(order='?'))
