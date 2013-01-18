@@ -8,11 +8,11 @@ from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.sites.models import RequestSite
-from django.contrib.sites.models import Site
+from django.contrib.sites.models import RequestSite, Site
 from registration.backends import default
 from registration import signals
 from registration.models import RegistrationProfile
+from voting.models import Vote
 import re
 import itertools
 
@@ -35,7 +35,7 @@ class AddQuoteForm(forms.Form):
     author = forms.CharField(label="Auteur")
     context = forms.CharField(label="Contexte", required=False)
     content = forms.CharField(widget=forms.Textarea(attrs={
-      'style':'width: 500px; heigth: 200px;'}), label="")
+      'style': 'width: 500px; heigth: 200px;'}), label="")
 
 
 class UserRegistrationForm(forms.Form):
@@ -92,20 +92,41 @@ def split_quotes(quotes, page=0, number=NUMBER_PER_PAGE):
     return quotes[page * number: (page + 1) * number]
 
 
+def pagination_infos(quotes, page):
+    r = {}
+    r['max_page'] = len(quotes) / NUMBER_PER_PAGE
+    if page < 0 or page > r['max_page']:
+        raise Http404()
+    r['next_page'] = None if page >= r['max_page'] else page + 1
+    r['prev_page'] = None if page <= 0 else page - 1
+    print r
+    return r
+
+
 def last_quotes(request, page=0):
     if 'p' in request.GET:
         return HttpResponseRedirect('/last/{0}'.format(request.GET['p']))
     page = int(page)
     all_quotes = get_quotes()
-    max_page = len(all_quotes) / NUMBER_PER_PAGE
-    if page < 0 or page > max_page:
-        raise Http404()
-    next_page = None if page >= max_page else page + 1
-    prev_page = None if page <= 0 else page - 1
+    r = pagination_infos(all_quotes, page)
     quotes = split_quotes(all_quotes, page=page)
-    return render(request, 'last.html', {'name_page': 'Dernières citations',
-        'quotes': quotes, 'next_page': next_page, 'prev_page': prev_page,
-        'page': page, 'max_page': max_page})
+    print r.update({'quotes': quotes, 'page': page})
+    return render(request, 'last.html', dict(
+        {'name_page': 'Dernières citations', 'quotes': quotes, 'page': page},
+        **r))
+
+
+def top_quotes(request):
+    quotes = [x for x, y in Vote.objects.get_top(Quote, limit=50)]
+    return render(request, 'simple.html', dict(
+        {'name_page': 'Meilleures citations', 'quotes': quotes}))
+
+
+def flop_quotes(request):
+    q = Vote.objects.get_top(Quote, limit=50, reversed=True)
+    quotes = [x for x, y in q]
+    return render(request, 'simple.html', dict(
+        {'name_page': 'Pires citations', 'quotes': quotes}))
 
 
 def random_quotes(request):
@@ -117,7 +138,7 @@ def random_quotes(request):
 def search_quotes(request):
     def quotes_split(s):
         l = map((lambda x: x.strip()), s.split('"'))
-        l = [[e] if i%2 else e.split() for i, e in enumerate(l)]
+        l = [[e] if i % 2 else e.split() for i, e in enumerate(l)]
         return filter(bool, itertools.chain(*l))
 
     f = SearchForm(request.GET)

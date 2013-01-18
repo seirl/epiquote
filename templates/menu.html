@@ -11,6 +11,10 @@
           {% if request.path|slice:":5" == "/last" %}active{% endif %}">
           <a href="/last">Dernières</a>
           </li>
+          <li class="
+          {% if request.path|slice:":4" == "/top" %}active{% endif %}">
+          <a href="/top">Meilleures</a>
+          </li>
           <li class="{% if request.path == "/add" %}active{% endif %}">
           <a href="/add">Ajouter</a>
           </li>
