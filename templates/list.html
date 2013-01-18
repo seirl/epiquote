@@ -7,7 +7,7 @@
     {% score_for_object quote as score %}
     {% dict_entry_for_item quote from vote_dict as vote %}
     <tr>
-      <td>
+      <td class="span12">
         <blockquote>
           <p><small style="font-size: 0.9em;">
             <strong>{{ quote.author }}</strong>
@@ -16,7 +16,9 @@
           {{ quote.content|linebreaks }}
         </blockquote>
         <p style="margin-left: 20px;">
-        <small>Score : <span id="s{{ quote.id }}">{{ score.score }}</span>
+        <small>
+          <a href="/{{ quote.id }}">#{{ quote.id }}</a> − 
+          Score : <span id="s{{ quote.id }}">{{ score.score }}</span>
           (<span id="t{{ quote.id }}">{{ score.num_votes }}</span>
           vote{{ score.num_votes|pluralize }})
           {% if user.is_authenticated and not vote %}

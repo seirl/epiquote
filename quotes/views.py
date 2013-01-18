@@ -3,12 +3,13 @@
 
 from models import Quote
 from django import forms
-from django.shortcuts import render
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.models import RequestSite, Site
+from django.shortcuts import render
 from registration.backends import default
 from registration import signals
 from registration.models import RegistrationProfile
@@ -128,15 +129,26 @@ def flop_quotes(request):
     return render(request, 'simple.html', dict(
         {'name_page': 'Pires citations', 'quotes': quotes}))
 
+
 def home(request):
     last = get_quotes()[:5]
     top = [x for x, y in Vote.objects.get_top(Quote, limit=5)]
     return render(request, 'home.html', {'top': top, 'last': last})
 
+
 def random_quotes(request):
     quotes = split_quotes(get_quotes(order='?'))
     return render(request, 'simple.html', {'name_page':
         'Citations aléatoires', 'quotes': quotes})
+
+
+def show_quote(request, quote_id):
+    try:
+        quote = get_quotes().get(id=quote_id)
+    except ObjectDoesNotExist:
+        raise Http404()
+    return render(request, 'simple.html', {'name_page':
+        'Citation #{}'.format(quote_id), 'quotes': [quote]})
 
 
 def search_quotes(request):
