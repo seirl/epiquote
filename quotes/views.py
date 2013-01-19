@@ -147,7 +147,7 @@ def show_quote(request, quote_id):
         quote = get_quotes().get(id=quote_id)
     except ObjectDoesNotExist:
         raise Http404()
-    return render(request, 'simple.html', {'name_page':
+    return render(request, 'quote.html', {'name_page':
         'Citation #{0}'.format(quote_id), 'quotes': [quote]})
 
 

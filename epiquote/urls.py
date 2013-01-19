@@ -34,4 +34,5 @@ urlpatterns = patterns('',
             'form_class': views.UserRegistrationForm
         }),
     url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^comments/', include('django.contrib.comments.urls')),
 )

@@ -12,8 +12,5 @@ class Quote(models.Model):
     content = models.TextField(verbose_name='contenu')
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, null=True, blank=True)
-    votes_up = models.IntegerField(default=0)
-    votes_down = models.IntegerField(default=0)
-    rank = models.FloatField(default=0)
     visible = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False, verbose_name=u'accepté')

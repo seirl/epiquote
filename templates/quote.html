@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load comments %}
+{% load bootstrap %}
+
+{% block title %}{{ name_page }}{% endblock %}
+{% block content %}
+  {% include "list.html" with quotes=quotes %}
+  {% get_comment_list for quotes.0 as comment_list %}
+  <div class="row" style="margin-top: 30px;">
+    <div class="span10 offset1">
+      <h3>Commentaires</h3>
+      <table class="table table-bordered">
+        {% for comment in comment_list %}
+          <tr>
+            <td style="width: 80px;">
+              <small><em>{{ comment.user_name }}</em></small>
+            </td>
+            <td><small>{{ comment.comment }}</small></td>
+          </tr>
+        {% endfor %}
+      </table>
+      {% if user.is_authenticated %}
+        {% get_comment_form for quotes.0 as form %}
+        <form action="{% comment_form_target %}"
+          class="form-horizontal" method="POST">
+          {% csrf_token %}
+          <div class="control-group required">
+            <label class="control-label" for="id_comment">Commentaire</label>
+            <div class="controls">
+              <textarea id="id_comment" rows="6" cols="40" style="width:60%"
+                name="comment"></textarea>
+            </div>
+          </div>
+          <div style="display: none">{{ form.honeypot }}</div>
+          {{ form.content_type }}
+          {{ form.object_pk }}
+          {{ form.timestamp }}
+          {{ form.security_hash }}
+          <input type="hidden" name="next" value="/{{ quotes.0.id }}#c" />
+          <div class="controls">
+            <input type="submit" class="btn" value="Ajouter un commentaire"
+            id="id_submit" />
+          </div>
+        </form>
+      {% else %}
+        <p>Merci de vous  <a href="/accounts/login">connecter</a> pour laisser
+        un commentaire.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
