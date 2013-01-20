@@ -130,10 +130,10 @@ def flop_quotes(request):
 
 def favourites(request, username):
     try:
-        user = User.objects.get(username=username)
+        userprofile = request.user.get_profile()
     except:
         raise Http404()
-    quotes = get_quotes().filter(user=user)
+    quotes = userprofile.quotes.all()
     return render(request, 'simple.html', dict(
         {'name_page': u'Favoris de {0}'.format(username), 'quotes': quotes}))
 
