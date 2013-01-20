@@ -8,9 +8,14 @@
     <input type="hidden" name="next" value="{{ next }}" />
     {{ form|bootstrap }}
     <div class="control-group">
-      <div class="controls">
-        <input type="submit" class="btn btn-large" value="Se connecter" />
-      </div>
+        <div class="controls">
+            <input type="submit" class="btn" value="Se connecter" />
+        </div>
     </div>
-  </form>
+    <div class="control-group">
+        <div class="controls">
+            <a href="/accounts/password/reset/">Mot de passe oublié ?</a>
+        </div>
+    </div>
+</form>
 {% endblock %}
