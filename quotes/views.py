@@ -4,6 +4,7 @@
 from models import Quote
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -89,30 +90,17 @@ def get_quotes(only_visible=True, order='-date'):
     return quotes
 
 
-def split_quotes(quotes, page=0, number=NUMBER_PER_PAGE):
-    return quotes[page * number: (page + 1) * number]
-
-
-def pagination_infos(quotes, page):
-    r = {}
-    r['max_page'] = len(quotes) / NUMBER_PER_PAGE
-    if page < 0 or page > r['max_page']:
-        raise Http404()
-    r['next_page'] = None if page >= r['max_page'] else page + 1
-    r['prev_page'] = None if page <= 0 else page - 1
-    return r
-
-
-def last_quotes(request, page=0):
+def last_quotes(request, p=1):
     if 'p' in request.GET:
         return HttpResponseRedirect('/last/{0}'.format(request.GET['p']))
-    page = int(page)
-    all_quotes = get_quotes()
-    r = pagination_infos(all_quotes, page)
-    quotes = split_quotes(all_quotes, page=page)
+    quotes = get_quotes()
+    paginate = Paginator(quotes, NUMBER_PER_PAGE)
+    try:
+        page = paginate.page(p)
+    except:
+        raise Http404()
     return render(request, 'last.html', dict(
-        {'name_page': 'Dernières citations', 'quotes': quotes, 'page': page},
-        **r))
+        {'name_page': 'Dernières citations', 'page': page}))
 
 
 def top_quotes(request):
@@ -145,7 +133,7 @@ def home(request):
 
 
 def random_quotes(request):
-    quotes = split_quotes(get_quotes(order='?'))
+    quotes = get_quotes(order='?')[0:NUMBER_PER_PAGE]
     return render(request, 'simple.html', {'name_page':
         'Citations aléatoires', 'quotes': quotes})
 

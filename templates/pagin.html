@@ -1,14 +1,16 @@
 <form method="GET" action="{{ pages_url }}">
-  {% if prev_page == None %}
-    <button class="btn btn-info disabled">←</button>
+  {% if not page.has_previous %}
+  <button class="btn btn-info disabled">←</button>
   {% else %}
-    <a class="btn btn-info" href="{{ pages_url }}/{{ prev_page }}">←</a>
+  <a class="btn btn-info"
+    href="{{ pages_url }}/{{ page.previous_page_number }}">←</a>
   {% endif %}
-  <input type="text" class="span1" name="p" value="{{ page }}" />
-  <span class="add-on">sur {{ max_page }}</span>
-  {% if next_page == None %}
-    <button class="btn btn-info disabled">→</button>
+  <input type="text" class="span1" name="p" value="{{ page.number }}" />
+  <span class="add-on">sur {{ page.paginator.num_pages }}</span>
+  {% if not page.has_next %}
+  <button class="btn btn-info disabled">→</button>
   {% else %}
-    <a class="btn btn-info" href="{{ pages_url }}/{{ next_page }}">→</a>
+  <a class="btn btn-info"
+    href="{{ pages_url }}/{{ page.next_page_number }}">→</a>
   {% endif %}
 </form>

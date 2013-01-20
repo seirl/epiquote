@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Dernières citations{% endblock %}
+{% block title %}{{ name_page }}{% endblock %}
 {% block content %}
   <div class="span2 offset10 input-prepend input-append">
     {% include "pagin.html" with pages_url="/last" %}
   </div>
   <div class="span12">
-    {% include "list.html" with quotes=quotes %}
+    {% include "list.html" with quotes=page.object_list %}
   </div>
   <div class="span2 offset10 input-prepend input-append">
     {% include "pagin.html" with pages_url="/last" %}
