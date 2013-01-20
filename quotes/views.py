@@ -157,7 +157,7 @@ def search_quotes(request):
     if not f.is_valid():
         raise Http404()
     q = f.cleaned_data['q']
-    terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(re.escape(s)),
+    terms = map(lambda s: ur'(^|[^\w]){0}([^\w]|$)'.format(re.escape(s)),
             quotes_split(q))
     if not terms:
         raise Http404()
