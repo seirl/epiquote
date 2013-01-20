@@ -159,7 +159,8 @@ def search_quotes(request):
     if not f.is_valid():
         raise Http404()
     q = f.cleaned_data['q']
-    terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(s), quotes_split(q))
+    terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(re.escape(s)),
+            quotes_split(q))
     if not terms:
         raise Http404()
     f = Q()
@@ -197,6 +198,7 @@ def add_confirm(request):
     return render(request, 'add_confirm.html', {'name_page':
             'Ajouter une citation'})
 
+
 @login_required
 def favourite(request, quote_id):
     #if request.method != 'POST':
@@ -212,4 +214,3 @@ def favourite(request, quote_id):
         profile.quotes.add(quote)
     profile.save()
     return HttpResponse('')
-
