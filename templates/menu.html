@@ -19,14 +19,28 @@
           <a href="/add">Ajouter</a>
           </li>
           {% if user.is_authenticated %}
-            <li class="
-            {% if request.path == "/accounts/logout" %}active{% endif %}">
-            <a href="/accounts/logout">Déconnexion</a></li>
+            <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              {{ request.user.username }}
+              <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" role="menu"
+              aria-labelledby="dLabel">
+              <li><a tabindex="-1"
+                  href="/favourites/{{ request.user.username }}">
+                  Favoris</a></li>
+              <li><a tabindex="-1"
+                  href="/accounts/password/change/">
+                  Changer de mot de passe</a></li>
+              <li class="divider"></li>
+              <li><a tabindex="-1" href="/accounts/logout">Déconnexion</a></li>
+            </ul>
+            </li>
           {% else %}
             <li class="
             {% if request.path == "/accounts/login/" %}
             active{% endif %}">
-              <a href="/accounts/login">Connexion</a></li>
+            <a href="/accounts/login">Connexion</a></li>
             <li class="
             {% if request.path == "/accounts/register/" %}active{% endif %}">
             <a href="/accounts/register">Inscription</a></li>
