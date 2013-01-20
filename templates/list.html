@@ -32,9 +32,17 @@
             </span>
           {% endif %}
           <span style="margin-right: 20px;" class="pull-right">
-              <a href="#">Ajouter en favori</a> − 
-              <a href="/{{ quote.id }}#c">{{ comment_count }}
-                  commentaire{{ comment_count|pluralize }}</a>
+            {% if user.is_authenticated %}
+              {% if quote in request.user.get_profile.quotes.all %}
+                <a onclick="fav('{{ quote.id }}');" id="f{{ quote.id }}"
+                  href="javascript:void(0)">Supprimer des favoris</a>
+              {% else %}
+                <a onclick="fav('{{ quote.id }}');" id="f{{ quote.id }}"
+                  href="javascript:void(0)">Ajouter en favori</a>
+              {% endif %} − 
+            {% endif %}
+            <a href="/{{ quote.id }}#c">{{ comment_count }}
+                commentaire{{ comment_count|pluralize }}</a>
           </span>
         </small>
         </p>

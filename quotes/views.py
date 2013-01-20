@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
-from models import Quote
+from models import Quote, UserProfile
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.models import RequestSite, Site
@@ -100,7 +100,6 @@ def pagination_infos(quotes, page):
         raise Http404()
     r['next_page'] = None if page >= r['max_page'] else page + 1
     r['prev_page'] = None if page <= 0 else page - 1
-    print r
     return r
 
 
@@ -111,7 +110,6 @@ def last_quotes(request, page=0):
     all_quotes = get_quotes()
     r = pagination_infos(all_quotes, page)
     quotes = split_quotes(all_quotes, page=page)
-    print r.update({'quotes': quotes, 'page': page})
     return render(request, 'last.html', dict(
         {'name_page': 'Dernières citations', 'quotes': quotes, 'page': page},
         **r))
@@ -198,3 +196,20 @@ def add_quote(request):
 def add_confirm(request):
     return render(request, 'add_confirm.html', {'name_page':
             'Ajouter une citation'})
+
+@login_required
+def favourite(request, quote_id):
+    #if request.method != 'POST':
+    #    raise Http404()
+    try:
+        quote = Quote.objects.get(id=int(quote_id))
+    except:
+        raise Http404()
+    profile = request.user.get_profile()
+    if quote in profile.quotes.all():
+        profile.quotes.remove(quote)
+    else:
+        profile.quotes.add(quote)
+    profile.save()
+    return HttpResponse('')
+

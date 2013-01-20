@@ -3,6 +3,7 @@
 
 
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 
 
@@ -14,3 +15,15 @@ class Quote(models.Model):
     user = models.ForeignKey(User, null=True, blank=True)
     visible = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False, verbose_name=u'accepté')
+
+
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        profile, created = UserProfile.objects.get_or_create(user=instance)
+
+post_save.connect(create_user_profile, sender=User)
+
+
+class UserProfile(models.Model):
+    user = models.ForeignKey(User)
+    quotes = models.ManyToManyField(Quote)
