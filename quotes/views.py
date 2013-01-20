@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
-from models import Quote, UserProfile
+from models import Quote
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
@@ -128,6 +128,16 @@ def flop_quotes(request):
         {'name_page': 'Pires citations', 'quotes': quotes}))
 
 
+def favourites(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except:
+        raise Http404()
+    quotes = get_quotes().filter(user=user)
+    return render(request, 'simple.html', dict(
+        {'name_page': u'Favoris de {}'.format(username), 'quotes': quotes}))
+
+
 def home(request):
     last = get_quotes()[:5]
     top = [x for x, y in Vote.objects.get_top(Quote, limit=5)]
@@ -159,7 +169,8 @@ def search_quotes(request):
     if not f.is_valid():
         raise Http404()
     q = f.cleaned_data['q']
-    terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(s), quotes_split(q))
+    terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(re.escape(s)),
+            quotes_split(q))
     if not terms:
         raise Http404()
     f = Q()
@@ -197,6 +208,7 @@ def add_confirm(request):
     return render(request, 'add_confirm.html', {'name_page':
             'Ajouter une citation'})
 
+
 @login_required
 def favourite(request, quote_id):
     #if request.method != 'POST':
@@ -212,4 +224,3 @@ def favourite(request, quote_id):
         profile.quotes.add(quote)
     profile.save()
     return HttpResponse('')
-
