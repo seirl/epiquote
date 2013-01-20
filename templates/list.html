@@ -36,10 +36,10 @@
             {% if user.is_authenticated %}
               {% if quote in request.user.get_profile.quotes.all %}
                 <a onclick="fav('{{ quote.id }}');" id="f{{ quote.id }}"
-                  href="javascript:void(0)">Supprimer des favoris</a>
+                  href="javascript:void(0)">&lt;/3</a>
               {% else %}
                 <a onclick="fav('{{ quote.id }}');" id="f{{ quote.id }}"
-                  href="javascript:void(0)">Ajouter en favori</a>
+                    href="javascript:void(0)">&lt;3</a>
               {% endif %} − 
             {% endif %}
             <a href="/{{ quote.id }}#c">{{ comment_count }}
