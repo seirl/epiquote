@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
-from models import Quote, UserProfile
+from models import Quote
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
@@ -126,6 +126,16 @@ def flop_quotes(request):
     quotes = [x for x, y in q]
     return render(request, 'simple.html', dict(
         {'name_page': 'Pires citations', 'quotes': quotes}))
+
+
+def favourites(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except:
+        raise Http404()
+    quotes = get_quotes().filter(user=user)
+    return render(request, 'simple.html', dict(
+        {'name_page': u'Favoris de {}'.format(username), 'quotes': quotes}))
 
 
 def home(request):
