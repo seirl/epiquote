@@ -135,7 +135,7 @@ def favourites(request, username):
         raise Http404()
     quotes = get_quotes().filter(user=user)
     return render(request, 'simple.html', dict(
-        {'name_page': u'Favoris de {}'.format(username), 'quotes': quotes}))
+        {'name_page': u'Favoris de {0}'.format(username), 'quotes': quotes}))
 
 
 def home(request):
