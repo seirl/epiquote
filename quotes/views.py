@@ -83,18 +83,18 @@ def template_processor(request):
     }
 
 
-def filter_hidden(user, quotes):
+def get_quotes(user):
+    quotes = Quote.objects.filter(accepted=True)
     if not user.is_staff:
         quotes = quotes.filter(visible=True)
     return quotes
 
 
-def get_quotes(user):
-    return filter_hidden(user, Quote.objects.filter(accepted=True))
-
-
 def get_quotes_by_vote(user, **kwargs):
-    return filter_hidden(user, Vote.objects.get_top(Quote, **kwargs))
+    quotes = [x[0] for x in Vote.objects.get_top(Quote, **kwargs)]
+    if not user.is_staff:
+        quotes = filter(lambda x: x.visible, quotes)
+    return quotes
 
 
 def last_quotes(request, p=1):
@@ -111,14 +111,13 @@ def last_quotes(request, p=1):
 
 
 def top_quotes(request):
-    quotes = [x for x, y in get_quotes_by_vote(request.user, limit=50)]
+    quotes = get_quotes_by_vote(request.user, limit=50)
     return render(request, 'simple.html', dict(
         {'name_page': 'Meilleures citations', 'quotes': quotes}))
 
 
 def flop_quotes(request):
-    q = get_quotes_by_vote(request.user, limit=50, reversed=True)
-    quotes = [x for x, y in q]
+    quotes = get_quotes_by_vote(request.user, limit=50, reversed=True)
     return render(request, 'simple.html', dict(
         {'name_page': 'Pires citations', 'quotes': quotes}))
 
