@@ -8,8 +8,9 @@
     {% score_for_object quote as score %}
     {% dict_entry_for_item quote from vote_dict as vote %}
     {% get_comment_count for quote as comment_count %}
-    <tr>
-      <td class="span12">
+    <tr class="">
+      <td class="span12" style="{% if not quote.visible %}background-color:
+          #F2DEDE{% endif %}">
         <blockquote>
           <p><small style="font-size: 0.9em;">
             <strong>{{ quote.author }}</strong>

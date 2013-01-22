@@ -83,9 +83,9 @@ def template_processor(request):
     }
 
 
-def get_quotes(only_visible=True, order='-date'):
-    quotes = Quote.objects.order_by(order).filter(accepted=True)
-    if only_visible:
+def get_quotes(user):
+    quotes = Quote.objects.filter(accepted=True)
+    if not user.is_staff:
         quotes = quotes.filter(visible=True)
     return quotes
 
@@ -93,7 +93,7 @@ def get_quotes(only_visible=True, order='-date'):
 def last_quotes(request, p=1):
     if 'p' in request.GET:
         return HttpResponseRedirect('/last/{0}'.format(request.GET['p']))
-    quotes = get_quotes()
+    quotes = get_quotes(request.user).order_by('-date')
     paginate = Paginator(quotes, NUMBER_PER_PAGE)
     try:
         page = paginate.page(p)
@@ -127,20 +127,20 @@ def favourites(request, username):
 
 
 def home(request):
-    last = get_quotes()[:5]
+    last = get_quotes(request.user)[:5]
     top = [x for x, y in Vote.objects.get_top(Quote, limit=5)]
     return render(request, 'home.html', {'top': top, 'last': last})
 
 
 def random_quotes(request):
-    quotes = get_quotes(order='?')[0:NUMBER_PER_PAGE]
+    quotes = get_quotes(request.user).order_by('?')[0:NUMBER_PER_PAGE]
     return render(request, 'simple.html', {'name_page':
         'Citations aléatoires', 'quotes': quotes})
 
 
 def show_quote(request, quote_id):
     try:
-        quote = get_quotes().get(id=quote_id)
+        quote = get_quotes(request.user).get(id=quote_id)
     except ObjectDoesNotExist:
         raise Http404()
     return render(request, 'quote.html', {'name_page':
@@ -166,7 +166,7 @@ def search_quotes(request):
         f |= (Q(content__iregex=w)
                 | Q(context__iregex=w)
                 | Q(author__iregex=w))
-    quotes = get_quotes()
+    quotes = get_quotes(request.user).order_by('-date')
     quotes = quotes.filter(f)
     if not quotes:
         raise Http404()
