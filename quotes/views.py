@@ -133,8 +133,8 @@ def favourites(request, username):
 
 
 def home(request):
-    last = get_quotes(request.user)[:5]
-    top = [x for x, y in Vote.objects.get_top(Quote, limit=5)]
+    last = get_quotes(request.user).order_by('-date')[:5]
+    top = get_quotes_by_vote(request.user, limit=5)
     return render(request, 'home.html', {'top': top, 'last': last})
 
 
