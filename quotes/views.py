@@ -169,7 +169,7 @@ def search_quotes(request):
         raise Http404()
     f = Q()
     for w in terms:
-        f |= (Q(content__iregex=w)
+        f &= (Q(content__iregex=w)
                 | Q(context__iregex=w)
                 | Q(author__iregex=w))
     quotes = get_quotes(request.user).order_by('-date')
