@@ -10,6 +10,7 @@ from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.models import RequestSite, Site
+from django.contrib.syndication.views import Feed
 from django.shortcuts import render
 from registration.backends import default
 from registration import signals
@@ -18,7 +19,8 @@ from voting.models import Vote
 import re
 import itertools
 
-NUMBER_PER_PAGE = 30
+MAX_PAGE = 30
+MAX_RSS = 30
 
 
 class SearchForm(forms.Form):
@@ -83,9 +85,9 @@ def template_processor(request):
     }
 
 
-def get_quotes(user):
+def get_quotes(user=None):
     quotes = Quote.objects.filter(accepted=True)
-    if not user.is_staff:
+    if not (user and user.is_staff):
         quotes = quotes.filter(visible=True)
     return quotes
 
@@ -101,7 +103,7 @@ def last_quotes(request, p=1):
     if 'p' in request.GET:
         return HttpResponseRedirect('/last/{0}'.format(request.GET['p']))
     quotes = get_quotes(request.user).order_by('-date')
-    paginate = Paginator(quotes, NUMBER_PER_PAGE)
+    paginate = Paginator(quotes, MAX_PAGE)
     try:
         page = paginate.page(p)
     except:
@@ -139,7 +141,7 @@ def home(request):
 
 
 def random_quotes(request):
-    quotes = get_quotes(request.user).order_by('?')[0:NUMBER_PER_PAGE]
+    quotes = get_quotes(request.user).order_by('?')[:MAX_PAGE]
     return render(request, 'simple.html', {'name_page':
         'Citations aléatoires', 'quotes': quotes})
 
@@ -218,3 +220,17 @@ def favourite(request, quote_id):
         profile.quotes.add(quote)
     profile.save()
     return HttpResponse('')
+
+class LatestFeed(Feed):
+    title = 'Epiquote'
+    link = '/last'
+    description = 'Les dernières citations sur Epiquote'
+
+    def items(self):
+        return get_quotes(None).order_by('-date')[:MAX_RSS]
+
+    def item_title(self, item):
+        return '#{}'.format(item.id)
+
+    def item_description(self, item):
+        return u'Contexte : <em>{}</em>\n{}'.format(item.context, item.content)
