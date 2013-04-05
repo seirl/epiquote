@@ -1,0 +1,5 @@
+<strong>{{ author }}</strong><br />
+{% if context %}
+    <em>Contexte : {{ context|linebreaksbr }}</em><br />
+{% endif %}
+{{ content|linebreaksbr }}

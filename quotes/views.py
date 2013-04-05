@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.template import Context, loader
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.models import RequestSite, Site
@@ -20,7 +21,6 @@ import re
 import itertools
 
 MAX_PAGE = 30
-MAX_RSS = 30
 
 
 class SearchForm(forms.Form):
@@ -227,10 +227,12 @@ class LatestFeed(Feed):
     description = 'Les dernières citations sur Epiquote'
 
     def items(self):
-        return get_quotes(None).order_by('-date')[:MAX_RSS]
+        return get_quotes(None).order_by('-date')[:MAX_PAGE]
 
     def item_title(self, item):
         return '#{}'.format(item.id)
 
     def item_description(self, item):
-        return u'Contexte : <em>{}</em>\n{}'.format(item.context, item.content)
+        t = loader.get_template('rss_description.html')
+        return t.render(Context({'context': item.context,
+            'content': item.content, 'author': item.author}))
