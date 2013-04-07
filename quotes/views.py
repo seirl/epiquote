@@ -207,8 +207,6 @@ def add_confirm(request):
 
 @login_required
 def favourite(request, quote_id):
-    #if request.method != 'POST':
-    #    raise Http404()
     try:
         quote = Quote.objects.get(id=int(quote_id))
     except:
@@ -220,6 +218,7 @@ def favourite(request, quote_id):
         profile.quotes.add(quote)
     profile.save()
     return HttpResponse('')
+
 
 class LatestFeed(Feed):
     title = 'Epiquote'
