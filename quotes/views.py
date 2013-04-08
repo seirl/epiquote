@@ -229,7 +229,7 @@ class LatestFeed(Feed):
         return get_quotes(None).order_by('-date')[:MAX_PAGE]
 
     def item_title(self, item):
-        return '#{}'.format(item.id)
+        return '#{0}'.format(item.id)
 
     def item_description(self, item):
         t = loader.get_template('rss_description.html')
