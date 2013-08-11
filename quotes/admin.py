@@ -20,12 +20,18 @@ def make_accepted(modeladmin, request, queryset):
 make_accepted.short_description = 'Accepter'
 
 
+def make_visibleaccepted(modeladmin, request, queryset):
+    queryset.update(visible=True, accepted=True)
+make_accepted.short_description = 'Accepter et rendre visible'
+
+
 class QuoteAdmin(admin.ModelAdmin):
     list_display = ('author', 'context', 'content', 'date', 'accepted',
-            'visible')
+                    'visible')
     list_filter = ('date', 'accepted')
     search_fields = ('author', 'context', 'content')
-    actions = [make_visible, make_novisible, make_accepted]
+    actions = [make_visibleaccepted, make_visible, make_novisible,
+               make_accepted]
 
 
 admin.site.register(Quote, QuoteAdmin)
