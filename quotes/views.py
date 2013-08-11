@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
-from models import Quote
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator
-from django.db.models import Q
-from django.http import Http404, HttpResponseRedirect, HttpResponse
-from django.template import Context, loader
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.sites.models import RequestSite, Site
 from django.contrib.syndication.views import Feed
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from registration.backends import default
+from django.template import Context, loader
+from models import Quote
+from registration.backends.default import DefaultBackend
 from registration import signals
 from registration.models import RegistrationProfile
 from voting.models import Vote
-import re
+
 import itertools
+import re
 
 MAX_PAGE = 30
 
@@ -63,7 +64,7 @@ class UserRegistrationForm(forms.Form):
         return self.data['username']
 
 
-class Backend(default.DefaultBackend):
+class Backend(DefaultBackend):
     def register(self, request, **kwargs):
         username, password = kwargs['username'], kwargs['password1']
         email = username + '@epita.fr'
