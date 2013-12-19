@@ -22,7 +22,7 @@ make_accepted.short_description = 'Accepter'
 
 def make_visibleaccepted(modeladmin, request, queryset):
     queryset.update(visible=True, accepted=True)
-make_accepted.short_description = 'Accepter et rendre visible'
+make_visibleaccepted.short_description = 'Accepter et rendre visible'
 
 
 class QuoteAdmin(admin.ModelAdmin):
