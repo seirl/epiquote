@@ -29,7 +29,7 @@ urlpatterns = patterns('',
         csrf_exempt(vote_on_object), quote_dict),
     url(r'^add$', views.add_quote),
     url(r'^add_confirm$', views.add_confirm),
-    url(r'^feed.rss$', views.LatestFeed()),
+    url(r'^feed\.rss$', views.LatestFeed()),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/register/$', 'registration.views.register',
         {
