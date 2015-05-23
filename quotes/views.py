@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
+from __future__ import print_function
+from __future__ import absolute_import
+
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -12,7 +15,7 @@ from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
-from models import Quote
+from .models import Quote
 from registration.backends.default import DefaultBackend
 from registration import signals
 from registration.models import RegistrationProfile
@@ -132,7 +135,7 @@ def favourites(request, username):
         raise Http404()
     quotes = userprofile.quotes.all()
     return render(request, 'simple.html', dict(
-        {'name_page': u'Favoris de {0}'.format(username), 'quotes': quotes}))
+        {'name_page': 'Favoris de {0}'.format(username), 'quotes': quotes}))
 
 
 def home(request):
@@ -166,7 +169,7 @@ def search_quotes(request):
     if not f.is_valid():
         raise Http404()
     q = f.cleaned_data['q']
-    terms = map(lambda s: ur'(^|[^\w]){0}([^\w]|$)'.format(re.escape(s)),
+    terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(re.escape(s)),
             quotes_split(q))
     if not terms:
         raise Http404()
@@ -180,12 +183,12 @@ def search_quotes(request):
     if not quotes:
         raise Http404()
     return render(request, 'simple.html', {'name_page':
-        u'Recherche : {0}'.format(request.GET['q']), 'quotes': quotes})
+        'Recherche : {0}'.format(request.GET['q']), 'quotes': quotes})
 
 
 @login_required
 def add_quote(request):
-    print type(request.user)
+    print(type(request.user))
     if request.method == 'POST':
         form = AddQuoteForm(request.POST)
         if form.is_valid():
@@ -197,7 +200,7 @@ def add_quote(request):
     else:
         form = AddQuoteForm()
     return render(request, 'add.html', {'name_page':
-        u'Ajouter une citation', 'add_form': form})
+        'Ajouter une citation', 'add_form': form})
 
 
 @login_required
