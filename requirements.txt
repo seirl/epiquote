@@ -2,3 +2,4 @@ django
 django-registration
 django-bootstrap-form
 django-voting
+django-contrib-comments

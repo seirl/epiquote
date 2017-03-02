@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import absolute_import
-
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.sites.models import RequestSite, Site
+from django.contrib.sites.models import Site
+from django.contrib.sites.requests import RequestSite
 from django.contrib.syndication.views import Feed
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
@@ -16,10 +14,13 @@ from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
 from .models import Quote
-from registration.backends.default import DefaultBackend
+from registration.forms import RegistrationForm
+from registration.views import RegistrationView
+#from registration.backends.base import RegistrationBackendBase
 from registration import signals
 from registration.models import RegistrationProfile
 from voting.models import Vote
+from django.contrib.auth.forms import UserCreationForm
 
 import itertools
 import re
@@ -46,18 +47,17 @@ class AddQuoteForm(forms.Form):
       'style': 'width: 500px; heigth: 200px;'}), label="")
 
 
-class UserRegistrationForm(forms.Form):
+class UserRegistrationForm(RegistrationForm):
+    email = None
     username = forms.CharField(max_length=8, label='Login EPITA')
-    password1 = forms.CharField(widget=forms.PasswordInput(),
-            label="Mot de passe")
-    password2 = forms.CharField(widget=forms.PasswordInput(),
-            label="Vérification du mot de passe")
+    class Meta(UserCreationForm.Meta):
+        fields = [
+            User.USERNAME_FIELD,
+            'password1',
+            'password2'
+        ]
+        required_css_class = 'required'
 
-    def clean_password2(self):
-        if self.data['password1'] != self.data['password2']:
-            raise forms.ValidationError(
-                    'Les mots de passe ne correspondent pas.')
-        return self.data['password1']
 
     def clean_username(self):
         if not re.match('^[a-zA-Z0-9_-]{0,8}$', self.data['username']):
@@ -67,16 +67,17 @@ class UserRegistrationForm(forms.Form):
         return self.data['username']
 
 
-class Backend(DefaultBackend):
-    def register(self, request, **kwargs):
-        username, password = kwargs['username'], kwargs['password1']
-        email = username + '@epita.fr'
+class UserRegistrationView(RegistrationView):
+    form_class = UserRegistrationForm
+
+    def register(self, form):
+        username = form.cleaned_data.get('username')
+        form.cleaned_data['email'] = username + '@epita.fr'
         if Site._meta.installed:
             site = Site.objects.get_current()
         else:
             site = RequestSite(request)
-        new_user = RegistrationProfile.objects.create_inactive_user(username,
-                email, password, site)
+        new_user = RegistrationProfile.objects.create_inactive_user(form, site)
         signals.user_registered.send(sender=self.__class__,
                                      user=new_user,
                                      request=request)
