@@ -131,7 +131,7 @@ def flop_quotes(request):
 
 def favourites(request, username):
     try:
-        userprofile = User.objects.get(username=username).get_profile()
+        userprofile = User.objects.get(username=username).profile
     except:
         raise Http404()
     quotes = userprofile.quotes.all()
@@ -216,7 +216,7 @@ def favourite(request, quote_id):
         quote = Quote.objects.get(id=int(quote_id))
     except:
         raise Http404()
-    profile = request.user.get_profile()
+    profile = request.user.profile
     if quote in profile.quotes.all():
         profile.quotes.remove(quote)
     else:

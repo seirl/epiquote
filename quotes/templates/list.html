@@ -20,14 +20,14 @@
         </blockquote>
         <p style="margin-left: 20px;">
         <small>
-          <a href="/{{ quote.id }}">#{{ quote.id }}</a> − 
+          <a href="/{{ quote.id }}">#{{ quote.id }}</a> −
           Score : <span id="s{{ quote.id }}">{{ score.score }}</span>
           (<span id="t{{ quote.id }}">{{ score.num_votes }}</span>
           vote{{ score.num_votes|pluralize }})
           {% if user.is_authenticated and not vote %}
-            <span id="d{{ quote.id }}"> − 
+            <span id="d{{ quote.id }}"> −
               <a href="javascript:void(0)"
-                onclick="vote('{{ quote.id }}', 'up');">(+)</a>  
+                onclick="vote('{{ quote.id }}', 'up');">(+)</a>
               <a href="javascript:void(0)"
                 onclick="vote('{{ quote.id }}', 'down');">(-)</a>
             </span>
@@ -35,13 +35,13 @@
           <span style="margin-right: 20px;" class="pull-right">
             <a href="javascript:void(0);" onclick="rimshot();">♫</a> −
             {% if user.is_authenticated %}
-              {% if quote in request.user.get_profile.quotes.all %}
+              {% if quote in request.user.profile.quotes.all %}
                 <a onclick="fav('{{ quote.id }}');" id="f{{ quote.id }}"
                   href="javascript:void(0)">&lt;/3</a>
               {% else %}
                 <a onclick="fav('{{ quote.id }}');" id="f{{ quote.id }}"
                     href="javascript:void(0)">&lt;3</a>
-              {% endif %} − 
+              {% endif %} −
             {% endif %}
             <a href="/{{ quote.id }}#c">{{ comment_count }}
                 commentaire{{ comment_count|pluralize }}</a>
@@ -52,4 +52,3 @@
     </tr>
   {% endfor %}
 </table>
-

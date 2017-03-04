@@ -27,5 +27,8 @@ post_save.connect(create_user_profile, sender=User)
 
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User)
+    user = models.OneToOneField(
+        User,
+        related_name='profile',
+    )
     quotes = models.ManyToManyField(Quote)
