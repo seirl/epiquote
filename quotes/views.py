@@ -100,7 +100,7 @@ def get_quotes(user=None):
 def get_quotes_by_vote(user, **kwargs):
     quotes = [x[0] for x in Vote.objects.get_top(Quote, **kwargs)]
     if not user.is_staff:
-        quotes = filter(lambda x: x.visible, quotes)
+        quotes = list(filter(lambda x: x.visible, quotes))
     return quotes
 
 
