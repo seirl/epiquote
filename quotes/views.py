@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
+import itertools
+import re
+
 from django import forms
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
-from django.contrib.sites.requests import RequestSite
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.syndication.views import Feed
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
@@ -13,17 +16,12 @@ from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
-from .models import Quote
-from registration.forms import RegistrationForm
-from registration.views import RegistrationView
-#from registration.backends.base import RegistrationBackendBase
 from registration import signals
-from registration.models import RegistrationProfile
+from registration.forms import RegistrationForm
+from registration.backends.default.views import RegistrationView
 from voting.models import Vote
-from django.contrib.auth.forms import UserCreationForm
 
-import itertools
-import re
+from .models import Quote
 
 MAX_PAGE = 30
 
@@ -48,40 +46,25 @@ class AddQuoteForm(forms.Form):
 
 
 class UserRegistrationForm(RegistrationForm):
+    username = forms.CharField(max_length=64, label='Login EPITA')
     email = None
-    username = forms.CharField(max_length=8, label='Login EPITA')
-    class Meta(UserCreationForm.Meta):
-        fields = [
-            User.USERNAME_FIELD,
-            'password1',
-            'password2'
-        ]
-        required_css_class = 'required'
 
+    class Meta(RegistrationForm.Meta):
+        model = User
+        fields = [User.USERNAME_FIELD]
 
     def clean_username(self):
-        if not re.match('^[a-zA-Z0-9_-]{0,8}$', self.data['username']):
-            raise forms.ValidationError("Ce login n'est pas valide.")
         if User.objects.filter(username=self.data['username']).exists():
             raise forms.ValidationError('Ce login est déjà enregistré.')
         return self.data['username']
 
+    def save(self, *args, **kwargs):
+        self.instance.email = self.cleaned_data['username'] + '@epita.fr'
+        return super().save(*args, **kwargs)
+
 
 class UserRegistrationView(RegistrationView):
     form_class = UserRegistrationForm
-
-    def register(self, form):
-        username = form.cleaned_data.get('username')
-        form.cleaned_data['email'] = username + '@epita.fr'
-        if Site._meta.installed:
-            site = Site.objects.get_current()
-        else:
-            site = RequestSite(request)
-        new_user = RegistrationProfile.objects.create_inactive_user(form, site)
-        signals.user_registered.send(sender=self.__class__,
-                                     user=new_user,
-                                     request=request)
-        return new_user
 
 
 def template_processor(request):
