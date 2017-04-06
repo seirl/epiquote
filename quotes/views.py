@@ -6,9 +6,7 @@ import re
 
 from django import forms
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.syndication.views import Feed
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
@@ -16,7 +14,6 @@ from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
-from registration import signals
 from registration.forms import RegistrationForm
 from registration.backends.default.views import RegistrationView
 from voting.models import Vote
@@ -130,8 +127,8 @@ def home(request):
 
 def random_quotes(request):
     quotes = get_quotes(request.user).order_by('?')[:MAX_PAGE]
-    return render(request, 'simple.html', {'name_page':
-        'Citations aléatoires', 'quotes': quotes})
+    return render(request, 'simple.html', {'name_page': 'Citations aléatoires',
+                                           'quotes': quotes})
 
 
 def show_quote(request, quote_id):
@@ -139,8 +136,9 @@ def show_quote(request, quote_id):
         quote = get_quotes(request.user).get(id=quote_id)
     except ObjectDoesNotExist:
         raise Http404()
-    return render(request, 'quote.html', {'name_page':
-        'Citation #{0}'.format(quote_id), 'quotes': [quote]})
+    return render(request, 'quote.html',
+                  {'name_page': 'Citation #{0}'.format(quote_id),
+                   'quotes': [quote]})
 
 
 def search_quotes(request):
@@ -154,20 +152,21 @@ def search_quotes(request):
         raise Http404()
     q = f.cleaned_data['q']
     terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(re.escape(s)),
-            quotes_split(q))
+                quotes_split(q))
     if not terms:
         raise Http404()
     f = Q()
     for w in terms:
         f &= (Q(content__iregex=w)
-                | Q(context__iregex=w)
-                | Q(author__iregex=w))
+              | Q(context__iregex=w)
+              | Q(author__iregex=w))
     quotes = get_quotes(request.user).order_by('-date')
     quotes = quotes.filter(f)
     if not quotes:
         raise Http404()
-    return render(request, 'simple.html', {'name_page':
-        'Recherche : {0}'.format(request.GET['q']), 'quotes': quotes})
+    return render(request, 'simple.html',
+                  {'name_page': 'Recherche : {0}'.format(request.GET['q']),
+                   'quotes': quotes})
 
 
 @login_required
@@ -178,19 +177,19 @@ def add_quote(request):
         if form.is_valid():
             cd = form.cleaned_data
             quote = Quote(author=cd['author'], context=cd['context'],
-                    content=cd['content'], user=request.user)
+                          content=cd['content'], user=request.user)
             quote.save()
             return HttpResponseRedirect('/add_confirm')
     else:
         form = AddQuoteForm()
-    return render(request, 'add.html', {'name_page':
-        'Ajouter une citation', 'add_form': form})
+    return render(request, 'add.html', {'name_page': 'Ajouter une citation',
+                                        'add_form': form})
 
 
 @login_required
 def add_confirm(request):
-    return render(request, 'add_confirm.html', {'name_page':
-            'Ajouter une citation'})
+    return render(request, 'add_confirm.html',
+                  {'name_page': 'Ajouter une citation'})
 
 
 @login_required
@@ -222,4 +221,5 @@ class LatestFeed(Feed):
     def item_description(self, item):
         t = loader.get_template('rss_description.html')
         return t.render(Context({'context': item.context,
-            'content': item.content, 'author': item.author}))
+                                 'content': item.content,
+                                 'author': item.author}))
