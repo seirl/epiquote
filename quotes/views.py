@@ -47,7 +47,7 @@ class AddQuoteForm(forms.Form):
 
 
 class UserRegistrationForm(forms.Form):
-    username = forms.CharField(max_length=8, label='Login EPITA')
+    username = forms.CharField(max_length=128, label='Login EPITA')
     password1 = forms.CharField(widget=forms.PasswordInput(),
             label="Mot de passe")
     password2 = forms.CharField(widget=forms.PasswordInput(),
@@ -60,7 +60,7 @@ class UserRegistrationForm(forms.Form):
         return self.data['password1']
 
     def clean_username(self):
-        if not re.match('^[a-zA-Z0-9_-]{0,8}$', self.data['username']):
+        if not re.match('^[a-zA-Z0-9_\.-]{0,128}$', self.data['username']):
             raise forms.ValidationError("Ce login n'est pas valide.")
         if User.objects.filter(username=self.data['username']).exists():
             raise forms.ValidationError('Ce login est déjà enregistré.')
