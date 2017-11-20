@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
-from __future__ import print_function
-from __future__ import absolute_import
+import itertools
+import re
 
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.sites.models import RequestSite, Site
 from django.contrib.syndication.views import Feed
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
@@ -15,14 +14,11 @@ from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
-from .models import Quote
-from registration.backends.default import DefaultBackend
-from registration import signals
-from registration.models import RegistrationProfile
+from registration.forms import RegistrationForm
+from registration.backends.default.views import RegistrationView
 from voting.models import Vote
 
-import itertools
-import re
+from .models import Quote
 
 MAX_PAGE = 30
 
@@ -46,41 +42,26 @@ class AddQuoteForm(forms.Form):
       'style': 'width: 500px; heigth: 200px;'}), label="")
 
 
-class UserRegistrationForm(forms.Form):
-    username = forms.CharField(max_length=8, label='Login EPITA')
-    password1 = forms.CharField(widget=forms.PasswordInput(),
-            label="Mot de passe")
-    password2 = forms.CharField(widget=forms.PasswordInput(),
-            label="Vérification du mot de passe")
+class UserRegistrationForm(RegistrationForm):
+    username = forms.CharField(max_length=64, label='Login EPITA')
+    email = None
 
-    def clean_password2(self):
-        if self.data['password1'] != self.data['password2']:
-            raise forms.ValidationError(
-                    'Les mots de passe ne correspondent pas.')
-        return self.data['password1']
+    class Meta(RegistrationForm.Meta):
+        model = User
+        fields = [User.USERNAME_FIELD]
 
     def clean_username(self):
-        if not re.match('^[a-zA-Z0-9_-]{0,8}$', self.data['username']):
-            raise forms.ValidationError("Ce login n'est pas valide.")
         if User.objects.filter(username=self.data['username']).exists():
             raise forms.ValidationError('Ce login est déjà enregistré.')
         return self.data['username']
 
+    def save(self, *args, **kwargs):
+        self.instance.email = self.cleaned_data['username'] + '@epita.fr'
+        return super().save(*args, **kwargs)
 
-class Backend(DefaultBackend):
-    def register(self, request, **kwargs):
-        username, password = kwargs['username'], kwargs['password1']
-        email = username + '@epita.fr'
-        if Site._meta.installed:
-            site = Site.objects.get_current()
-        else:
-            site = RequestSite(request)
-        new_user = RegistrationProfile.objects.create_inactive_user(username,
-                email, password, site)
-        signals.user_registered.send(sender=self.__class__,
-                                     user=new_user,
-                                     request=request)
-        return new_user
+
+class UserRegistrationView(RegistrationView):
+    form_class = UserRegistrationForm
 
 
 def template_processor(request):
@@ -99,7 +80,7 @@ def get_quotes(user=None):
 def get_quotes_by_vote(user, **kwargs):
     quotes = [x[0] for x in Vote.objects.get_top(Quote, **kwargs)]
     if not user.is_staff:
-        quotes = filter(lambda x: x.visible, quotes)
+        quotes = list(filter(lambda x: x.visible, quotes))
     return quotes
 
 
@@ -130,7 +111,7 @@ def flop_quotes(request):
 
 def favourites(request, username):
     try:
-        userprofile = User.objects.get(username=username).get_profile()
+        userprofile = User.objects.get(username=username).profile
     except:
         raise Http404()
     quotes = userprofile.quotes.all()
@@ -146,8 +127,8 @@ def home(request):
 
 def random_quotes(request):
     quotes = get_quotes(request.user).order_by('?')[:MAX_PAGE]
-    return render(request, 'simple.html', {'name_page':
-        'Citations aléatoires', 'quotes': quotes})
+    return render(request, 'simple.html', {'name_page': 'Citations aléatoires',
+                                           'quotes': quotes})
 
 
 def show_quote(request, quote_id):
@@ -155,8 +136,9 @@ def show_quote(request, quote_id):
         quote = get_quotes(request.user).get(id=quote_id)
     except ObjectDoesNotExist:
         raise Http404()
-    return render(request, 'quote.html', {'name_page':
-        'Citation #{0}'.format(quote_id), 'quotes': [quote]})
+    return render(request, 'quote.html',
+                  {'name_page': 'Citation #{0}'.format(quote_id),
+                   'quotes': [quote]})
 
 
 def search_quotes(request):
@@ -170,20 +152,21 @@ def search_quotes(request):
         raise Http404()
     q = f.cleaned_data['q']
     terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(re.escape(s)),
-            quotes_split(q))
+                quotes_split(q))
     if not terms:
         raise Http404()
     f = Q()
     for w in terms:
         f &= (Q(content__iregex=w)
-                | Q(context__iregex=w)
-                | Q(author__iregex=w))
+              | Q(context__iregex=w)
+              | Q(author__iregex=w))
     quotes = get_quotes(request.user).order_by('-date')
     quotes = quotes.filter(f)
     if not quotes:
         raise Http404()
-    return render(request, 'simple.html', {'name_page':
-        'Recherche : {0}'.format(request.GET['q']), 'quotes': quotes})
+    return render(request, 'simple.html',
+                  {'name_page': 'Recherche : {0}'.format(request.GET['q']),
+                   'quotes': quotes})
 
 
 @login_required
@@ -194,19 +177,19 @@ def add_quote(request):
         if form.is_valid():
             cd = form.cleaned_data
             quote = Quote(author=cd['author'], context=cd['context'],
-                    content=cd['content'], user=request.user)
+                          content=cd['content'], user=request.user)
             quote.save()
             return HttpResponseRedirect('/add_confirm')
     else:
         form = AddQuoteForm()
-    return render(request, 'add.html', {'name_page':
-        'Ajouter une citation', 'add_form': form})
+    return render(request, 'add.html', {'name_page': 'Ajouter une citation',
+                                        'add_form': form})
 
 
 @login_required
 def add_confirm(request):
-    return render(request, 'add_confirm.html', {'name_page':
-            'Ajouter une citation'})
+    return render(request, 'add_confirm.html',
+                  {'name_page': 'Ajouter une citation'})
 
 
 @login_required
@@ -215,7 +198,7 @@ def favourite(request, quote_id):
         quote = Quote.objects.get(id=int(quote_id))
     except:
         raise Http404()
-    profile = request.user.get_profile()
+    profile = request.user.profile
     if quote in profile.quotes.all():
         profile.quotes.remove(quote)
     else:
@@ -238,4 +221,5 @@ class LatestFeed(Feed):
     def item_description(self, item):
         t = loader.get_template('rss_description.html')
         return t.render(Context({'context': item.context,
-            'content': item.content, 'author': item.author}))
+                                 'content': item.content,
+                                 'author': item.author}))

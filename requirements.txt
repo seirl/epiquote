@@ -1,4 +1,6 @@
 django
 django-registration
 django-bootstrap-form
-django-voting
+#django-voting
+git+https://github.com/seirl/django-voting.git@temp_merge
+django-contrib-comments

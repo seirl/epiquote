@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.decorators.csrf import csrf_exempt
 from voting.views import vote_on_object
@@ -14,7 +14,7 @@ quote_dict = {
     'template_name': 'quote_confirm_vote.html'
 }
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', views.home),
     url(r'^last$', views.last_quotes),
     url(r'^last/(\d+)$', views.last_quotes),
@@ -31,11 +31,7 @@ urlpatterns = patterns('',
     url(r'^add_confirm$', views.add_confirm),
     url(r'^feed\.rss$', views.LatestFeed()),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/register/$', 'registration.views.register',
-        {
-            'backend': 'quotes.views.Backend',
-            'form_class': views.UserRegistrationForm
-        }),
+    url(r'^accounts/register/$', views.UserRegistrationView.as_view()),
     url(r'^accounts/', include('registration.backends.default.urls')),
-    url(r'^comments/', include('django.contrib.comments.urls')),
-)
+    url(r'^comments/', include('django_comments.urls')),
+]

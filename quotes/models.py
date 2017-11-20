@@ -6,7 +6,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 
-
 class Quote(models.Model):
     author = models.CharField(max_length=50, verbose_name='auteur')
     context = models.TextField(verbose_name='contexte', blank=True)
@@ -28,5 +27,8 @@ post_save.connect(create_user_profile, sender=User)
 
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User)
+    user = models.OneToOneField(
+        User,
+        related_name='profile',
+    )
     quotes = models.ManyToManyField(Quote)
