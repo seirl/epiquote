@@ -4,11 +4,10 @@ import re
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.syndication.views import Feed
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template import Context, loader
 from registration.backends.default.views import RegistrationView
 from voting.models import Vote
@@ -23,13 +22,6 @@ class UserRegistrationView(RegistrationView):
     form_class = UserRegistrationForm
 
 
-def get_quotes(user=None):
-    quotes = Quote.objects.filter(accepted=True)
-    if not (user and user.is_staff):
-        quotes = quotes.filter(visible=True)
-    return quotes
-
-
 def get_quotes_by_vote(user, **kwargs):
     quotes = [x[0] for x in Vote.objects.get_top(Quote, **kwargs)]
     if not user.is_staff:
@@ -40,7 +32,7 @@ def get_quotes_by_vote(user, **kwargs):
 def last_quotes(request, p=1):
     if 'p' in request.GET:
         return HttpResponseRedirect('/last/{0}'.format(request.GET['p']))
-    quotes = get_quotes(request.user).order_by('-date')
+    quotes = Quote.objects.seen_by(request.user).order_by('-date')
     paginate = Paginator(quotes, MAX_PAGE)
     try:
         page = paginate.page(p)
@@ -63,32 +55,26 @@ def flop_quotes(request):
 
 
 def favourites(request, username):
-    try:
-        userprofile = User.objects.get(username=username).profile
-    except:
-        raise Http404()
+    userprofile = get_object_or_404(User, username=username).profile
     quotes = userprofile.quotes.all()
     return render(request, 'simple.html', dict(
         {'name_page': 'Favoris de {0}'.format(username), 'quotes': quotes}))
 
 
 def home(request):
-    last = get_quotes(request.user).order_by('-date')[:5]
+    last = Quote.objects.seen_by(request.user).order_by('-date')[:5]
     top = get_quotes_by_vote(request.user, limit=5)
     return render(request, 'home.html', {'top': top, 'last': last})
 
 
 def random_quotes(request):
-    quotes = get_quotes(request.user).order_by('?')[:MAX_PAGE]
+    quotes = Quote.objects.seen_by(request.user).order_by('?')[:MAX_PAGE]
     return render(request, 'simple.html', {'name_page': 'Citations aléatoires',
                                            'quotes': quotes})
 
 
 def show_quote(request, quote_id):
-    try:
-        quote = get_quotes(request.user).get(id=quote_id)
-    except ObjectDoesNotExist:
-        raise Http404()
+    quote = get_object_or_404(Quote.objects.seen_by(request.user), id=quote_id)
     return render(request, 'quote.html',
                   {'name_page': 'Citation #{0}'.format(quote_id),
                    'quotes': [quote]})
@@ -113,7 +99,7 @@ def search_quotes(request):
         f &= (Q(content__iregex=w)
               | Q(context__iregex=w)
               | Q(author__iregex=w))
-    quotes = get_quotes(request.user).order_by('-date')
+    quotes = Quote.objects.seen_by(request.user).order_by('-date')
     quotes = quotes.filter(f)
     if not quotes:
         raise Http404()
@@ -147,10 +133,8 @@ def add_confirm(request):
 
 @login_required
 def favourite(request, quote_id):
-    try:
-        quote = Quote.objects.get(id=int(quote_id))
-    except:
-        raise Http404()
+    quote = get_object_or_404(Quote.objects.seen_by(request.user),
+                              id=int(quote_id))
     profile = request.user.profile
     if quote in profile.quotes.all():
         profile.quotes.remove(quote)
@@ -166,7 +150,7 @@ class LatestFeed(Feed):
     description = 'Les dernières citations sur Epiquote'
 
     def items(self):
-        return get_quotes(None).order_by('-date')[:MAX_PAGE]
+        return Quote.objects.seen_by(None).order_by('-date')[:MAX_PAGE]
 
     def item_title(self, item):
         return '#{0}'.format(item.id)
