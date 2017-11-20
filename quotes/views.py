@@ -1,10 +1,6 @@
-#!/usr/bin/env python3
-# -*- encoding: utf-8 -*-
-
 import itertools
 import re
 
-from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.syndication.views import Feed
@@ -14,50 +10,13 @@ from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
-from registration.forms import RegistrationForm
 from registration.backends.default.views import RegistrationView
 from voting.models import Vote
+from quotes.forms import AddQuoteForm, UserRegistrationForm, SearchForm
 
 from .models import Quote
 
 MAX_PAGE = 30
-
-
-class SearchForm(forms.Form):
-    q = forms.CharField()
-
-    def clean_q(self):
-        q = self.cleaned_data['q']
-        if len(q.split()) > 30:
-            raise forms.ValidationError("Trop de mots.")
-        if len(q) > 300:
-            raise forms.ValidationError("Trop de lettres.")
-        return q
-
-
-class AddQuoteForm(forms.Form):
-    author = forms.CharField(label="Auteur")
-    context = forms.CharField(label="Contexte", required=False)
-    content = forms.CharField(widget=forms.Textarea(attrs={
-      'style': 'width: 500px; heigth: 200px;'}), label="")
-
-
-class UserRegistrationForm(RegistrationForm):
-    username = forms.CharField(max_length=64, label='Login EPITA')
-    email = None
-
-    class Meta(RegistrationForm.Meta):
-        model = User
-        fields = [User.USERNAME_FIELD]
-
-    def clean_username(self):
-        if User.objects.filter(username=self.data['username']).exists():
-            raise forms.ValidationError('Ce login est déjà enregistré.')
-        return self.data['username']
-
-    def save(self, *args, **kwargs):
-        self.instance.email = self.cleaned_data['username'] + '@epita.fr'
-        return super().save(*args, **kwargs)
 
 
 class UserRegistrationView(RegistrationView):
