@@ -23,12 +23,6 @@ class UserRegistrationView(RegistrationView):
     form_class = UserRegistrationForm
 
 
-def template_processor(request):
-    return {
-        'quotes_search_form': SearchForm(),
-    }
-
-
 def get_quotes(user=None):
     quotes = Quote.objects.filter(accepted=True)
     if not (user and user.is_staff):
