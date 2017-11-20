@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Meilleures citations{% endblock %}
+{% block title %}Favoris de {{ username }}{% endblock %}
 {% block content %}
   {% include "list.html" with quotes=quotes %}
 {% endblock %}

@@ -38,27 +38,24 @@ def last_quotes(request, p=1):
         page = paginate.page(p)
     except:
         raise Http404()
-    return render(request, 'last.html', dict(
-        {'name_page': 'Dernières citations', 'page': page}))
+    return render(request, 'last.html', {'page': page})
 
 
 def top_quotes(request):
     quotes = get_quotes_by_vote(request.user, limit=50)
-    return render(request, 'simple.html', dict(
-        {'name_page': 'Meilleures citations', 'quotes': quotes}))
+    return render(request, 'top.html', {'quotes': quotes})
 
 
 def flop_quotes(request):
     quotes = get_quotes_by_vote(request.user, limit=50, reversed=True)
-    return render(request, 'simple.html', dict(
-        {'name_page': 'Pires citations', 'quotes': quotes}))
+    return render(request, 'flop.html', {'quotes': quotes})
 
 
 def favourites(request, username):
     userprofile = get_object_or_404(User, username=username).profile
     quotes = userprofile.quotes.all()
-    return render(request, 'simple.html', dict(
-        {'name_page': 'Favoris de {0}'.format(username), 'quotes': quotes}))
+    return render(request, 'favourites.html',
+                  {'username': username, 'quotes': quotes})
 
 
 def home(request):
@@ -69,15 +66,12 @@ def home(request):
 
 def random_quotes(request):
     quotes = Quote.objects.seen_by(request.user).order_by('?')[:MAX_PAGE]
-    return render(request, 'simple.html', {'name_page': 'Citations aléatoires',
-                                           'quotes': quotes})
+    return render(request, 'random.html', {'quotes': quotes})
 
 
 def show_quote(request, quote_id):
     quote = get_object_or_404(Quote.objects.seen_by(request.user), id=quote_id)
-    return render(request, 'quote.html',
-                  {'name_page': 'Citation #{0}'.format(quote_id),
-                   'quotes': [quote]})
+    return render(request, 'quote.html', {'quotes': [quote]})
 
 
 def search_quotes(request):
@@ -103,9 +97,8 @@ def search_quotes(request):
     quotes = quotes.filter(f)
     if not quotes:
         raise Http404()
-    return render(request, 'simple.html',
-                  {'name_page': 'Recherche : {0}'.format(request.GET['q']),
-                   'quotes': quotes})
+    return render(request, 'search_results.html',
+                  {'search_terms': request.GET['q'], 'quotes': quotes})
 
 
 @login_required
@@ -121,14 +114,12 @@ def add_quote(request):
             return HttpResponseRedirect('/add_confirm')
     else:
         form = AddQuoteForm()
-    return render(request, 'add.html', {'name_page': 'Ajouter une citation',
-                                        'add_form': form})
+    return render(request, 'add.html', {'add_form': form})
 
 
 @login_required
 def add_confirm(request):
-    return render(request, 'add_confirm.html',
-                  {'name_page': 'Ajouter une citation'})
+    return render(request, 'add_confirm.html')
 
 
 @login_required

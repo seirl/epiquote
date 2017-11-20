@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Meilleures citations{% endblock %}
+{% block title %}Recherche: <i>{{ search_terms }}</i>{% endblock %}
 {% block content %}
   {% include "list.html" with quotes=quotes %}
 {% endblock %}
