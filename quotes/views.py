@@ -13,7 +13,7 @@ from registration.backends.default.views import RegistrationView
 from voting.models import Vote
 from quotes.forms import AddQuoteForm, UserRegistrationForm, SearchForm
 
-from .models import Quote
+from quotes.models import Quote
 
 MAX_PAGE = 30
 

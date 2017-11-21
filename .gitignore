@@ -1,4 +1,5 @@
 *.sqlite*
-settings.py
 *.swp
 *.pyc
+
+epiquote/settings/*.py
