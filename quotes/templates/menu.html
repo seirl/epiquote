@@ -1,22 +1,22 @@
+{% load navigation %}
+
 <div class="navbar">
   <div class="navbar-inner">
     <div class="container">
       <a class="brand" href="/">Epiquote</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
-          <li class="{% if request.path == "/random" %}active{% endif %}">
-          <a href="/random">Au hasard</a>
+          <li class="{% active '^/random' %}">
+            <a href="/random">Au hasard</a>
           </li>
-          <li class="
-          {% if request.path|slice:":5" == "/last" %}active{% endif %}">
-          <a href="/last">Dernières</a>
+          <li class="{% active '^/last' %}">
+            <a href="/last">Dernières</a>
           </li>
-          <li class="
-          {% if request.path|slice:":4" == "/top" %}active{% endif %}">
-          <a href="/top">Meilleures</a>
+          <li class="{% active '^/top' %}">
+            <a href="/top">Meilleures</a>
           </li>
-          <li class="{% if request.path == "/add" %}active{% endif %}">
-          <a href="/add">Ajouter</a>
+          <li class="{% active '^/add' %}">
+            <a href="/add">Ajouter</a>
           </li>
           {% if user.is_authenticated %}
             <li class="dropdown">
@@ -37,13 +37,12 @@
             </ul>
             </li>
           {% else %}
-            <li class="
-            {% if request.path == "/accounts/login/" %}
-            active{% endif %}">
-            <a href="/accounts/login">Connexion</a></li>
-            <li class="
-            {% if request.path == "/accounts/register/" %}active{% endif %}">
-            <a href="/accounts/register">Inscription</a></li>
+            <li class="{% active '^/accounts/login' %}">
+              <a href="/accounts/login">Connexion</a>
+            </li>
+            <li class="{% active '^/accounts/register' %}">
+              <a href="/accounts/register">Inscription</a>
+            </li>
           {% endif %}
         </ul>
         {% include "search.html" %}
