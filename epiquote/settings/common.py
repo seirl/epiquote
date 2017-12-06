@@ -150,7 +150,11 @@ LOGGING = {
 }
 
 ACCOUNT_ACTIVATION_DAYS = 1
-DEFAULT_FROM_EMAIL = 'Epiquote <noreply@serialk.fr>'
+DEFAULT_FROM_EMAIL = 'Epiquote <noreply@epiquote.fr>'
 LOGIN_REDIRECT_URL = '/'
 DATABASE_ENGINE = 'sqlite3'
 AUTH_PROFILE_MODULE = 'quotes.UserProfile'
+
+# Quotes pagination
+QUOTES_MAX_PAGE = 50
+QUOTES_MAX_PAGE_HOME = 5

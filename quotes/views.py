@@ -1,6 +1,7 @@
 import itertools
 import re
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.syndication.views import Feed
@@ -17,9 +18,6 @@ from quotes.forms import AddQuoteForm, UserRegistrationForm, SearchForm
 from registration.backends.default.views import RegistrationView
 
 
-MAX_PAGE = 30
-
-
 class UserRegistrationView(RegistrationView):
     form_class = UserRegistrationForm
 
@@ -28,7 +26,7 @@ def last_quotes(request, p=1):
     if 'p' in request.GET:
         return HttpResponseRedirect('/last/{0}'.format(request.GET['p']))
     quotes = Quote.objects.seen_by(request.user).order_by('-date')
-    paginate = Paginator(quotes, MAX_PAGE)
+    paginate = Paginator(quotes, settings.QUOTES_MAX_PAGE)
     try:
         page = paginate.page(p)
     except:
@@ -37,12 +35,14 @@ def last_quotes(request, p=1):
 
 
 def top_quotes(request):
-    quotes = Quote.objects.seen_by(request.user).order_by('-score')[:50]
+    quotes = (Quote.objects.seen_by(request.user)
+              .order_by('-score')[:settings.QUOTES_MAX_PAGE])
     return render(request, 'top.html', {'quotes': quotes})
 
 
 def flop_quotes(request):
-    quotes = Quote.objects.seen_by(request.user).order_by('score')[:50]
+    quotes = (Quote.objects.seen_by(request.user)
+              .order_by('score')[:settings.QUOTES_MAX_PAGE])
     return render(request, 'flop.html', {'quotes': quotes})
 
 
@@ -54,13 +54,15 @@ def favourites(request, username):
 
 
 def home(request):
-    last = Quote.objects.seen_by(request.user).order_by('-date')[:5]
-    top = Quote.objects.seen_by(request.user).order_by('-score')[:5]
+    last = (Quote.objects.seen_by(request.user)
+            .order_by('-date')[:settings.QUOTES_MAX_PAGE_HOME])
+    top = (Quote.objects.seen_by(request.user)
+           .order_by('-score')[:settings.QUOTES_MAX_PAGE_HOME])
     return render(request, 'home.html', {'top': top, 'last': last})
 
 
 def random_quotes(request):
-    quotes = Quote.objects.seen_by(request.user).order_by('?')[:MAX_PAGE]
+    quotes = Quote.objects.seen_by(request.user).order_by('?')[:settings.QUOTES_MAX_PAGE]
     return render(request, 'random.html', {'quotes': quotes})
 
 
@@ -157,7 +159,8 @@ class LatestFeed(Feed):
     description = 'Les dernières citations sur Epiquote'
 
     def items(self):
-        return Quote.objects.seen_by(None).order_by('-date')[:MAX_PAGE]
+        return (Quote.objects.seen_by(None)
+                .order_by('-date')[:settings.QUOTES_MAX_PAGE])
 
     def item_title(self, item):
         return '#{0}'.format(item.id)
