@@ -9,24 +9,19 @@ from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.template import Context, loader
-from registration.backends.default.views import RegistrationView
-from voting.models import Vote
-from quotes.forms import AddQuoteForm, UserRegistrationForm, SearchForm
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
-from quotes.models import Quote
+from quotes.models import Quote, QuoteVote
+from quotes.forms import AddQuoteForm, UserRegistrationForm, SearchForm
+from registration.backends.default.views import RegistrationView
+
 
 MAX_PAGE = 30
 
 
 class UserRegistrationView(RegistrationView):
     form_class = UserRegistrationForm
-
-
-def get_quotes_by_vote(user, **kwargs):
-    quotes = [x[0] for x in Vote.objects.get_top(Quote, **kwargs)]
-    if not user.is_staff:
-        quotes = list(filter(lambda x: x.visible, quotes))
-    return quotes
 
 
 def last_quotes(request, p=1):
@@ -42,12 +37,12 @@ def last_quotes(request, p=1):
 
 
 def top_quotes(request):
-    quotes = get_quotes_by_vote(request.user, limit=50)
+    quotes = Quote.objects.seen_by(request.user).order_by('-score')[:50]
     return render(request, 'top.html', {'quotes': quotes})
 
 
 def flop_quotes(request):
-    quotes = get_quotes_by_vote(request.user, limit=50, reversed=True)
+    quotes = Quote.objects.seen_by(request.user).order_by('score')[:50]
     return render(request, 'flop.html', {'quotes': quotes})
 
 
@@ -60,7 +55,7 @@ def favourites(request, username):
 
 def home(request):
     last = Quote.objects.seen_by(request.user).order_by('-date')[:5]
-    top = get_quotes_by_vote(request.user, limit=5)
+    top = Quote.objects.seen_by(request.user).order_by('-score')[:5]
     return render(request, 'home.html', {'top': top, 'last': last})
 
 
@@ -122,7 +117,9 @@ def add_confirm(request):
     return render(request, 'add_confirm.html')
 
 
+@csrf_exempt
 @login_required
+@require_http_methods(['POST'])
 def favourite(request, quote_id):
     quote = get_object_or_404(Quote.objects.seen_by(request.user),
                               id=int(quote_id))
@@ -132,6 +129,26 @@ def favourite(request, quote_id):
     else:
         profile.quotes.add(quote)
     profile.save()
+    return HttpResponse('')
+
+
+@csrf_exempt
+@login_required
+@require_http_methods(['POST'])
+def vote(request, quote_id, direction):
+    VOTE_DIRECTIONS = {'up': 1, 'down': -1, 'clear': 0}
+    vote = VOTE_DIRECTIONS[direction]
+    quote = get_object_or_404(Quote.objects.seen_by(request.user), id=quote_id)
+    try:
+        qv = QuoteVote.objects.get(user=request.user, quote=quote)
+        if vote == 0:
+            qv.delete()
+        else:
+            qv.vote = vote
+            qv.save()
+    except QuoteVote.DoesNotExist:
+        qv = QuoteVote(user=request.user, quote=quote, vote=vote)
+        qv.save()
     return HttpResponse('')
 
 

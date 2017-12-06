@@ -1,7 +1,5 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.views.decorators.csrf import csrf_exempt
-from voting.views import vote_on_object
 from quotes.models import Quote
 from quotes import views
 
@@ -24,9 +22,8 @@ urlpatterns = [
     url(r'^search$', views.search_quotes),
     url(r'^favourites/(?P<username>\w+)$', views.favourites),
     url(r'^(\d+)$', views.show_quote, name='show_quote'),
-    url(r'^(\d+)/favourite$', csrf_exempt(views.favourite)),
-    url(r'^(?P<object_id>\d+)/(?P<direction>up|down|clear)vote/?$',
-        csrf_exempt(vote_on_object), quote_dict),
+    url(r'^(\d+)/favourite$', views.favourite),
+    url(r'^(?P<quote_id>\d+)/(?P<direction>up|down|clear)vote/?$', views.vote),
     url(r'^add$', views.add_quote),
     url(r'^add_confirm$', views.add_confirm),
     url(r'^feed\.rss$', views.LatestFeed()),

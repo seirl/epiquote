@@ -1,12 +1,7 @@
-{% load voting_tags %}
-{% load comments %}
-{% votes_by_user user on quotes as vote_dict %}
-
+{% load comments vote %}
 
 <table class="table-striped">
   {% for quote in quotes %}
-    {% score_for_object quote as score %}
-    {% dict_entry_for_item quote from vote_dict as vote %}
     {% get_comment_count for quote as comment_count %}
     <tr class="">
       <td class="span12" style="{% if not quote.visible %}background-color:
@@ -21,16 +16,19 @@
         <p style="margin-left: 20px;">
         <small>
           <a href="/{{ quote.id }}">#{{ quote.id }}</a> −
-          Score : <span id="s{{ quote.id }}">{{ score.score }}</span>
-          (<span id="t{{ quote.id }}">{{ score.num_votes }}</span>
-          vote{{ score.num_votes|pluralize }})
-          {% if user.is_authenticated and not vote %}
-            <span id="d{{ quote.id }}"> −
-              <a href="javascript:void(0)"
-                onclick="vote('{{ quote.id }}', 'up');">(+)</a>
-              <a href="javascript:void(0)"
-                onclick="vote('{{ quote.id }}', 'down');">(-)</a>
-            </span>
+          Score : <span id="s{{ quote.id }}">{{ quote.score }}</span>
+          (<span id="t{{ quote.id }}">{{ quote.num_votes }}</span>
+          vote{{ quote.num_votes|pluralize }})
+          {% if user.is_authenticated %}
+            {% vote_for user quote as vote %}
+            {% if not vote %}
+              <span id="d{{ quote.id }}"> −
+                <a href="javascript:void(0)"
+                  onclick="vote('{{ quote.id }}', 'up');">(+)</a>
+                <a href="javascript:void(0)"
+                  onclick="vote('{{ quote.id }}', 'down');">(-)</a>
+              </span>
+            {% endif %}
           {% endif %}
           <span style="margin-right: 20px;" class="pull-right">
             <a href="javascript:void(0);" onclick="rimshot();">♫</a> −
