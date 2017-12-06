@@ -98,7 +98,6 @@ def search_quotes(request):
 
 @login_required
 def add_quote(request):
-    print(type(request.user))
     if request.method == 'POST':
         form = AddQuoteForm(request.POST)
         if form.is_valid():
