@@ -118,7 +118,6 @@ INSTALLED_APPS = (
     'quotes',
     'registration',
     'bootstrapform',
-    'voting',
 )
 
 # A sample logging configuration. The only tangible logging
