@@ -2,13 +2,7 @@
 
 {% block title %}Dernières citations{% endblock %}
 {% block content %}
-  <div class="span2 offset9 input-prepend input-append">
-    {% include "pagin.html" with pages_url="/last" %}
-  </div>
-  <div class="span12">
-    {% include "list.html" with quotes=page.object_list %}
-  </div>
-  <div class="span2 offset9 input-prepend input-append">
-    {% include "pagin.html" with pages_url="/last" %}
-  </div>
+  {% include "pagin.html" %}
+  {% include "list.html" %}
+  {% include "pagin.html" %}
 {% endblock %}

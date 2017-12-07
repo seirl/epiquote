@@ -71,4 +71,4 @@ class UserProfile(models.Model):
         User,
         related_name='profile',
     )
-    quotes = models.ManyToManyField(Quote)
+    quotes = models.ManyToManyField(Quote, related_name='users_favorite')

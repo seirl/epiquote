@@ -5,13 +5,13 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.syndication.views import Feed
-from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.template import Context, loader
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.views.generic import ListView
 
 from quotes.models import Quote, QuoteVote
 from quotes.forms import AddQuoteForm, UserRegistrationForm, SearchForm
@@ -22,35 +22,58 @@ class UserRegistrationView(RegistrationView):
     form_class = UserRegistrationForm
 
 
-def last_quotes(request, p=1):
-    if 'p' in request.GET:
-        return HttpResponseRedirect('/last/{0}'.format(request.GET['p']))
-    quotes = Quote.objects.seen_by(request.user).order_by('-date')
-    paginate = Paginator(quotes, settings.QUOTES_MAX_PAGE)
-    try:
-        page = paginate.page(p)
-    except:
-        raise Http404()
-    return render(request, 'last.html', {'page': page})
+class QuoteListView(ListView):
+    context_object_name = 'quotes'
+    order = None
+    limit = None
+
+    def get_queryset(self):
+        qs = Quote.objects.seen_by(self.request.user)
+        if self.order is not None:
+            qs = qs.order_by(self.order)
+        if self.limit is not None:
+            qs = qs[:self.limit]
+        return qs
 
 
-def top_quotes(request):
-    quotes = (Quote.objects.seen_by(request.user)
-              .order_by('-score')[:settings.QUOTES_MAX_PAGE])
-    return render(request, 'top.html', {'quotes': quotes})
+class LastQuotes(QuoteListView):
+    template_name = 'last.html'
+    paginate_by = settings.QUOTES_MAX_PAGE
+    order = '-date'
 
 
-def flop_quotes(request):
-    quotes = (Quote.objects.seen_by(request.user)
-              .order_by('score')[:settings.QUOTES_MAX_PAGE])
-    return render(request, 'flop.html', {'quotes': quotes})
+class TopQuotes(QuoteListView):
+    template_name = 'top.html'
+    paginate_by = settings.QUOTES_MAX_PAGE
+    order = '-score'
 
 
-def favourites(request, username):
-    userprofile = get_object_or_404(User, username=username).profile
-    quotes = userprofile.quotes.all()
-    return render(request, 'favourites.html',
-                  {'username': username, 'quotes': quotes})
+class FlopQuotes(QuoteListView):
+    template_name = 'flop.html'
+    paginate_by = settings.QUOTES_MAX_PAGE
+    order = 'score'
+
+
+class RandomQuotes(QuoteListView):
+    template_name = 'random.html'
+    limit = settings.QUOTES_MAX_PAGE
+    order = '?'
+
+
+class FavouriteQuotes(QuoteListView):
+    template_name = 'favourites.html'
+    paginate_by = settings.QUOTES_MAX_PAGE
+    order = '-date'
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        userprofile = get_object_or_404(User, username=username).profile
+        return super().get_queryset().filter(users_favorite=userprofile)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['username'] = self.kwargs['username']
+        return context
 
 
 def home(request):
@@ -59,11 +82,6 @@ def home(request):
     top = (Quote.objects.seen_by(request.user)
            .order_by('-score')[:settings.QUOTES_MAX_PAGE_HOME])
     return render(request, 'home.html', {'top': top, 'last': last})
-
-
-def random_quotes(request):
-    quotes = Quote.objects.seen_by(request.user).order_by('?')[:settings.QUOTES_MAX_PAGE]
-    return render(request, 'random.html', {'quotes': quotes})
 
 
 def show_quote(request, quote_id):

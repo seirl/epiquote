@@ -2,5 +2,7 @@
 
 {% block title %}Meilleures citations{% endblock %}
 {% block content %}
-  {% include "list.html" with quotes=quotes %}
+  {% include "pagin.html" %}
+  {% include "list.html" %}
+  {% include "pagin.html" %}
 {% endblock %}
