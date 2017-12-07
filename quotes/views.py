@@ -58,11 +58,6 @@ class FavouriteQuotes(QuoteListView):
         userprofile = get_object_or_404(User, username=username).profile
         return super().get_queryset().filter(users_favorite=userprofile)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['username'] = self.kwargs['username']
-        return context
-
 
 class HomeQuotes(QuoteListView):
     template_name = 'home.html'

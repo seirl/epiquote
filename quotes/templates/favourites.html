@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Favoris de {{ username }}{% endblock %}
+{% block title %}Favoris de {{ view.kwargs.username }}{% endblock %}
 {% block content %}
   {% include "list.html" %}
 {% endblock %}
