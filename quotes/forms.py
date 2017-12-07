@@ -1,6 +1,8 @@
-from django.contrib.auth import get_user_model
 from django import forms
+from django.contrib.auth import get_user_model
 from registration.forms import RegistrationForm
+
+from quotes.models import Quote
 
 User = get_user_model()
 
@@ -17,15 +19,15 @@ class SearchForm(forms.Form):
         return q
 
 
-class AddQuoteForm(forms.Form):
-    author = forms.CharField(label="Auteur")
-    context = forms.CharField(label="Contexte", required=False)
-    content = forms.CharField(
-        label="",
-        widget=forms.Textarea(attrs={'cols': '140',
-                                     'rows': '10',
-                                     'class': 'add-quote'}),
-    )
+class AddQuoteForm(forms.ModelForm):
+    class Meta:
+        model = Quote
+        fields = ['author', 'context', 'content']
+        widgets = {
+            'context': forms.TextInput(),
+            'content': forms.Textarea(
+                attrs={'cols': '140', 'rows': '10', 'class': 'add-quote'}),
+        }
 
 
 class UserRegistrationForm(RegistrationForm):

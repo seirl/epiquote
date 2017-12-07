@@ -2,8 +2,7 @@
 
 <table class="table-striped">
   {% for quote in quotes %}
-    {% get_comment_count for quote as comment_count %}
-    <tr class="">
+    <tr>
       <td class="span12" style="{% if not quote.visible %}background-color:
           #F2DEDE{% endif %}">
         <blockquote>
@@ -41,6 +40,7 @@
                     href="javascript:void(0)">&lt;3</a>
               {% endif %} −
             {% endif %}
+            {% get_comment_count for quote as comment_count %}
             <a href="/{{ quote.id }}#c">{{ comment_count }}
                 commentaire{{ comment_count|pluralize }}</a>
           </span>

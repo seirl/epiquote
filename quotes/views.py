@@ -4,36 +4,25 @@ import re
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
-from django.http import Http404, HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.template import Context, loader
+from django.views.generic import View, TemplateView
+from django.views.generic.edit import CreateView
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.views.generic import ListView
 
 from quotes.models import Quote, QuoteVote
+from quotes.views_generic import QuoteListView, QuoteDetailView
 from quotes.forms import AddQuoteForm, UserRegistrationForm, SearchForm
 from registration.backends.default.views import RegistrationView
 
 
-class UserRegistrationView(RegistrationView):
-    form_class = UserRegistrationForm
-
-
-class QuoteListView(ListView):
-    context_object_name = 'quotes'
-    order = None
-    limit = None
-
-    def get_queryset(self):
-        qs = Quote.objects.seen_by(self.request.user)
-        if self.order is not None:
-            qs = qs.order_by(self.order)
-        if self.limit is not None:
-            qs = qs[:self.limit]
-        return qs
+class DetailQuote(QuoteDetailView):
+    template_name = 'quote.html'
 
 
 class LastQuotes(QuoteListView):
@@ -76,64 +65,65 @@ class FavouriteQuotes(QuoteListView):
         return context
 
 
-def home(request):
-    last = (Quote.objects.seen_by(request.user)
-            .order_by('-date')[:settings.QUOTES_MAX_PAGE_HOME])
-    top = (Quote.objects.seen_by(request.user)
-           .order_by('-score')[:settings.QUOTES_MAX_PAGE_HOME])
-    return render(request, 'home.html', {'top': top, 'last': last})
+class HomeQuotes(QuoteListView):
+    template_name = 'home.html'
+    paginate_by = settings.QUOTES_MAX_PAGE
+    context_object_name = 'last'
+    order = '-date'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['top'] = (Quote.objects.seen_by(self.request.user)
+                          .order_by('-score')[:settings.QUOTES_MAX_PAGE_HOME])
+        return context
 
 
-def show_quote(request, quote_id):
-    quote = get_object_or_404(Quote.objects.seen_by(request.user), id=quote_id)
-    return render(request, 'quote.html', {'quotes': [quote]})
+class SearchQuotes(QuoteListView):
+    template_name = 'search_results.html'
+    order = '-date'
+
+    def quotes_split(self, s):
+        s = map((lambda x: x.strip()), s.split('"'))
+        s = [[e] if i % 2 else e.split() for i, e in enumerate(s)]
+        return filter(bool, itertools.chain(*s))
+
+    def get_search_terms(self):
+        f = SearchForm(self.request.GET)
+        if not f.is_valid():
+            return Quote.objects.none()
+        q = f.cleaned_data['q']
+        return [r'(^|[^\w]){0}([^\w]|$)'.format(re.escape(s))
+                for s in self.quotes_split(q)]
+
+    def get_queryset(self):
+        terms = self.get_search_terms()
+        if not terms:
+            return Quote.objects.none()
+        f = Q()
+        for w in terms:
+            f &= (Q(content__iregex=w)
+                  | Q(context__iregex=w)
+                  | Q(author__iregex=w))
+        return super().get_queryset().filter(f)
 
 
-def search_quotes(request):
-    def quotes_split(s):
-        l = map((lambda x: x.strip()), s.split('"'))
-        l = [[e] if i % 2 else e.split() for i, e in enumerate(l)]
-        return filter(bool, itertools.chain(*l))
+class AddQuote(LoginRequiredMixin, CreateView):
+    model = Quote
+    form_class = AddQuoteForm
+    success_url = '/add_confirm'
+    template_name = 'add.html'
 
-    f = SearchForm(request.GET)
-    if not f.is_valid():
-        raise Http404()
-    q = f.cleaned_data['q']
-    terms = map(lambda s: r'(^|[^\w]){0}([^\w]|$)'.format(re.escape(s)),
-                quotes_split(q))
-    if not terms:
-        raise Http404()
-    f = Q()
-    for w in terms:
-        f &= (Q(content__iregex=w)
-              | Q(context__iregex=w)
-              | Q(author__iregex=w))
-    quotes = Quote.objects.seen_by(request.user).order_by('-date')
-    quotes = quotes.filter(f)
-    if not quotes:
-        raise Http404()
-    return render(request, 'search_results.html',
-                  {'search_terms': request.GET['q'], 'quotes': quotes})
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
-@login_required
-def add_quote(request):
-    if request.method == 'POST':
-        form = AddQuoteForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            quote = Quote(author=cd['author'], context=cd['context'],
-                          content=cd['content'], user=request.user)
-            quote.save()
-            return HttpResponseRedirect('/add_confirm')
-    else:
-        form = AddQuoteForm()
-    return render(request, 'add.html', {'add_form': form})
+class AddQuoteConfirm(LoginRequiredMixin, TemplateView):
+    template_name = 'add_confirm.html'
 
 
-@login_required
-def add_confirm(request):
-    return render(request, 'add_confirm.html')
+class UserRegistrationView(RegistrationView):
+    form_class = UserRegistrationForm
 
 
 @csrf_exempt

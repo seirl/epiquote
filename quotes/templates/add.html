@@ -5,7 +5,7 @@
 {% block content %}
   <form class="form-horizontal" method="POST" action="">
     {% csrf_token %}
-    {{ add_form|bootstrap }}
+    {{ form|bootstrap }}
     <div class="control-group">
       <div class="controls">
         <input class="btn btn-large" type="submit" value="Soumettre" />

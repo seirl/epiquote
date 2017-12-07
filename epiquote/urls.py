@@ -13,18 +13,18 @@ quote_dict = {
 }
 
 urlpatterns = [
-    url(r'^$', views.home),
+    url(r'^$', views.HomeQuotes.as_view()),
     url(r'^last$', views.LastQuotes.as_view()),
     url(r'^top$', views.TopQuotes.as_view()),
     url(r'^flop$', views.FlopQuotes.as_view()),
     url(r'^random$', views.RandomQuotes.as_view()),
-    url(r'^search$', views.search_quotes),
+    url(r'^search$', views.SearchQuotes.as_view()),
     url(r'^favourites/(?P<username>\w+)$', views.FavouriteQuotes.as_view()),
-    url(r'^(\d+)$', views.show_quote, name='show_quote'),
+    url(r'^(?P<pk>\d+)$', views.DetailQuote.as_view(), name='show_quote'),
     url(r'^(\d+)/favourite$', views.favourite),
     url(r'^(?P<quote_id>\d+)/(?P<direction>up|down|clear)vote/?$', views.vote),
-    url(r'^add$', views.add_quote),
-    url(r'^add_confirm$', views.add_confirm),
+    url(r'^add$', views.AddQuote.as_view()),
+    url(r'^add_confirm$', views.AddQuoteConfirm.as_view()),
     url(r'^feed\.rss$', views.LatestFeed()),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/register/$', views.UserRegistrationView.as_view()),

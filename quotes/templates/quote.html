@@ -2,10 +2,10 @@
 {% load comments %}
 {% load bootstrap %}
 
-{% block title %}Citation #{{ quotes.0.id }}{% endblock %}
+{% block title %}Citation #{{ quote.id }}{% endblock %}
 {% block content %}
-  {% include "list.html" with quotes=quotes %}
-  {% get_comment_list for quotes.0 as comment_list %}
+  {% include "list.html" %}
+  {% get_comment_list for quote as comment_list %}
   <div class="row" style="margin-top: 30px;">
     <div class="span10 offset1">
       <h3>Commentaires</h3>
@@ -20,7 +20,7 @@
         {% endfor %}
       </table>
       {% if user.is_authenticated %}
-        {% get_comment_form for quotes.0 as form %}
+        {% get_comment_form for quote as form %}
         <form action="{% comment_form_target %}"
           class="form-horizontal" method="POST">
           {% csrf_token %}
@@ -36,7 +36,7 @@
           {{ form.object_pk }}
           {{ form.timestamp }}
           {{ form.security_hash }}
-          <input type="hidden" name="next" value="/{{ quotes.0.id }}#c" />
+          <input type="hidden" name="next" value="/{{ quote.id }}#c" />
           <div class="controls">
             <input type="submit" class="btn" value="Ajouter un commentaire"
             id="id_submit" />
