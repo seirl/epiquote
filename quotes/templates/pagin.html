@@ -7,7 +7,7 @@
       <a class="btn btn-info"
         href="{{ request.path }}?page={{ page_obj.previous_page_number }}">←</a>
       {% endif %}
-      <input type="text" class="span1" name="p" value="{{ page_obj.number }}" />
+      <input type="text" class="span1" name="page" value="{{ page_obj.number }}" />
       <span class="add-on">sur {{ page_obj.paginator.num_pages }}</span>
       {% if not page_obj.has_next %}
       <button class="btn btn-info disabled">→</button>
