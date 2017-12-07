@@ -2,8 +2,7 @@ import itertools
 import re
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
@@ -12,13 +11,13 @@ from django.shortcuts import get_object_or_404
 from django.template import Context, loader
 from django.views.generic import View, TemplateView
 from django.views.generic.edit import CreateView
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
 
 from quotes.models import Quote, QuoteVote
 from quotes.views_generic import QuoteListView, QuoteDetailView
 from quotes.forms import AddQuoteForm, UserRegistrationForm, SearchForm
 from registration.backends.default.views import RegistrationView
+
+User = get_user_model()
 
 
 class DetailQuote(QuoteDetailView):
@@ -126,39 +125,40 @@ class UserRegistrationView(RegistrationView):
     form_class = UserRegistrationForm
 
 
-@csrf_exempt
-@login_required
-@require_http_methods(['POST'])
-def favourite(request, quote_id):
-    quote = get_object_or_404(Quote.objects.seen_by(request.user),
-                              id=int(quote_id))
-    profile = request.user.profile
-    if quote in profile.quotes.all():
-        profile.quotes.remove(quote)
-    else:
-        profile.quotes.add(quote)
-    profile.save()
-    return HttpResponse('')
+class AjaxFavouriteView(LoginRequiredMixin, View):
+    http_method_names = ['post']
 
-
-@csrf_exempt
-@login_required
-@require_http_methods(['POST'])
-def vote(request, quote_id, direction):
-    VOTE_DIRECTIONS = {'up': 1, 'down': -1, 'clear': 0}
-    vote = VOTE_DIRECTIONS[direction]
-    quote = get_object_or_404(Quote.objects.seen_by(request.user), id=quote_id)
-    try:
-        qv = QuoteVote.objects.get(user=request.user, quote=quote)
-        if vote == 0:
-            qv.delete()
+    def post(self, *args, **kwargs):
+        quote = get_object_or_404(Quote.objects.seen_by(self.request.user),
+                                  id=int(self.kwargs['quote_id']))
+        profile = self.request.user.profile
+        if quote in profile.quotes.all():
+            profile.quotes.remove(quote)
         else:
-            qv.vote = vote
+            profile.quotes.add(quote)
+        profile.save()
+        return HttpResponse('')
+
+
+class AjaxVoteView(LoginRequiredMixin, View):
+    http_method_names = ['post']
+
+    def post(self, *args, **kwargs):
+        VOTE_DIRECTIONS = {'up': 1, 'down': -1, 'clear': 0}
+        vote = VOTE_DIRECTIONS[self.kwargs['direction']]
+        quote = get_object_or_404(Quote.objects.seen_by(self.request.user),
+                                  id=self.kwargs['quote_id'])
+        try:
+            qv = QuoteVote.objects.get(user=self.request.user, quote=quote)
+            if vote == 0:
+                qv.delete()
+            else:
+                qv.vote = vote
+                qv.save()
+        except QuoteVote.DoesNotExist:
+            qv = QuoteVote(user=self.request.user, quote=quote, vote=vote)
             qv.save()
-    except QuoteVote.DoesNotExist:
-        qv = QuoteVote(user=request.user, quote=quote, vote=vote)
-        qv.save()
-    return HttpResponse('')
+        return HttpResponse('')
 
 
 class LatestFeed(Feed):

@@ -1,8 +1,12 @@
 {% load staticfiles %}
 <script src="https://code.jquery.com/jquery-latest.js"></script>
 <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
-<script src="{% static "js/vote.js" %}"></script>
-<script src="{% static "js/fav.js" %}"></script>
-<script src="{% static "js/rimshot.js" %}"></script>
+<script type="text/javascript">
+$.ajaxSetup({
+    headers: { 'X-CSRFToken': "{{ csrf_token }}" }
+});
+</script>
+
+<script src="{% static "js/epiquote.js" %}"></script>
 <div id="sound"></div>
 
