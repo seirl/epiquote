@@ -61,8 +61,8 @@ class FavouriteQuotes(QuoteListView):
 
 class HomeQuotes(QuoteListView):
     template_name = 'home.html'
-    paginate_by = settings.QUOTES_MAX_PAGE
     context_object_name = 'last'
+    limit = settings.QUOTES_MAX_PAGE_HOME
     order = '-date'
 
     def get_context_data(self, *args, **kwargs):
