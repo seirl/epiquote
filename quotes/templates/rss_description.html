@@ -1,5 +1,5 @@
-<strong>{{ author }}</strong><br />
-{% if context %}
-    <em>Contexte : {{ context|linebreaksbr }}</em><br />
+<strong>{{ obj.author }}</strong><br />
+{% if obj.context %}
+    <em>Contexte : {{ obj.content|linebreaksbr }}</em><br />
 {% endif %}
-{{ content|linebreaksbr }}
+{{ obj.content|linebreaksbr }}

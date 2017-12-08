@@ -8,12 +8,11 @@ from django.contrib.syndication.views import Feed
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.template import Context, loader
 from django.views.generic import View, TemplateView
 from django.views.generic.edit import CreateView
 
 from quotes.models import Quote, QuoteVote
-from quotes.views_generic import QuoteListView, QuoteDetailView
+from quotes.views_generic import QuoteViewMixin, QuoteListView, QuoteDetailView
 from quotes.forms import AddQuoteForm, UserRegistrationForm, SearchForm
 from registration.backends.default.views import RegistrationView
 
@@ -156,20 +155,17 @@ class AjaxVoteView(LoginRequiredMixin, View):
         return HttpResponse('')
 
 
-class LatestFeed(Feed):
+class LatestFeed(QuoteViewMixin, Feed):
     title = 'Epiquote'
     link = '/last'
     description = 'Les dernières citations sur Epiquote'
+    description_template = 'rss_description.html'
+
+    order = '-date'
+    limit = settings.QUOTES_MAX_PAGE
 
     def items(self):
-        return (Quote.objects.seen_by(None)
-                .order_by('-date')[:settings.QUOTES_MAX_PAGE])
+        return super().get_queryset()
 
     def item_title(self, item):
         return '#{0}'.format(item.id)
-
-    def item_description(self, item):
-        t = loader.get_template('rss_description.html')
-        return t.render(Context({'context': item.context,
-                                 'content': item.content,
-                                 'author': item.author}))
