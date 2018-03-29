@@ -35,6 +35,9 @@ class Quote(models.Model):
     visible = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False, verbose_name=u'accepté')
 
+    voters = models.ManyToManyField(User, through='QuoteVote',
+                                    related_name='voted_quotes')
+
     objects = QuoteManager()
 
     def get_absolute_url(self):
@@ -47,7 +50,8 @@ class QuoteVote(models.Model):
         (-1, '-1'),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='votes')
     quote = models.ForeignKey(Quote, on_delete=models.CASCADE,
                               related_name='votes')
     vote = models.SmallIntegerField(choices=SCORES)
