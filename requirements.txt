@@ -2,4 +2,4 @@ django
 django-registration
 django-bootstrap-form
 django-contrib-comments
-psycopg2
+psycopg2-binary
