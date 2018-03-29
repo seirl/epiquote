@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^flop$', views.FlopQuotes.as_view()),
     url(r'^random$', views.RandomQuotes.as_view()),
     url(r'^search$', views.SearchQuotes.as_view()),
-    url(r'^favourites/(?P<username>\w+)$', views.FavouriteQuotes.as_view()),
+    url(r'^favourites/(?P<username>.+)$', views.FavouriteQuotes.as_view()),
     url(r'^(?P<pk>\d+)$', views.DetailQuote.as_view(), name='show_quote'),
     url(r'^(?P<quote_id>\d+)/favourite$', views.AjaxFavouriteView.as_view()),
     url(r'^(?P<quote_id>\d+)/(?P<direction>up|down|clear)vote/?$',
