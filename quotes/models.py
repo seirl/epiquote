@@ -5,7 +5,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Sum, Count
 from django.db.models.functions import Coalesce
-from django.db.models.signals import post_save
 from django.urls import reverse
 from django.utils.timezone import now
 
@@ -63,17 +62,3 @@ class QuoteVote(models.Model):
 
     def __str__(self):
         return '%s: %s on %s' % (self.user, self.vote, self.quote)
-
-
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        profile, created = UserProfile.objects.get_or_create(user=instance)
-
-
-post_save.connect(create_user_profile, sender=User)
-
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,
-                                related_name='profile')
-    quotes = models.ManyToManyField(Quote, related_name='users_favorite')
