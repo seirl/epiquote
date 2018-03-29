@@ -5,7 +5,7 @@ DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # You can generate a key using the following command:
-# openssl rand 64 -base64 | sed "s/[/10lO#+=]//g" | tr -d "\n"; echo
+# openssl rand -base64 64 | sed "s/[/10lO#+=]//g" | tr -d "\n"; echo
 SECRET_KEY = 'CHANGEME'
 
 ALLOWED_HOSTS = ['127.0.0.1', '::1', 'localhost']
