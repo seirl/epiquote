@@ -74,6 +74,7 @@ STATICFILES_FINDERS = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': ['epiquote/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'debug': DEBUG,
