@@ -12,7 +12,7 @@ quotes (from IRC or real life).
     pip install -r requirements.txt
     cp epiquote/settings/{conf.sample.py,dev.py}
     $EDITOR epiquote/settings/dev.py
-
+    python3 manage.py migrate
     python3 manage.py runserver
 
 ## Contributing
