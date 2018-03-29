@@ -32,7 +32,7 @@
           <span style="margin-right: 20px;" class="pull-right">
             <a href="javascript:void(0);" onclick="rimshot();">♫</a> −
             {% if user.is_authenticated %}
-              {% if quote in request.user.profile.quotes.all %}
+              {% if request.user in quote.fans.all %}
                 <a onclick="fav('{{ quote.id }}');" id="f{{ quote.id }}"
                   href="javascript:void(0)">&lt;/3</a>
               {% else %}

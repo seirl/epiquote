@@ -54,8 +54,8 @@ class FavouriteQuotes(QuoteListView):
 
     def get_queryset(self):
         username = self.kwargs['username']
-        userprofile = get_object_or_404(User, username=username).profile
-        return super().get_queryset().filter(users_favorite=userprofile)
+        user = get_object_or_404(User, username=username)
+        return super().get_queryset().filter(fans=user)
 
 
 class HomeQuotes(QuoteListView):
@@ -125,12 +125,11 @@ class AjaxFavouriteView(LoginRequiredMixin, View):
     def post(self, *args, **kwargs):
         quote = get_object_or_404(Quote.objects.seen_by(self.request.user),
                                   id=int(self.kwargs['quote_id']))
-        profile = self.request.user.profile
-        if quote in profile.quotes.all():
-            profile.quotes.remove(quote)
+        if self.request.user in quote.fans.all():
+            quote.fans.remove(self.request.user)
         else:
-            profile.quotes.add(quote)
-        profile.save()
+            quote.fans.add(self.request.user)
+        quote.save()
         return HttpResponse('')
 
 
