@@ -1,5 +1,5 @@
 django
-django-registration
+-e 'git+https://github.com/ubernostrum/django-registration#egg=registration'
 django-bootstrap-form
 django-contrib-comments
 psycopg2-binary

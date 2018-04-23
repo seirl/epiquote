@@ -21,6 +21,6 @@ urlpatterns = [
     url(r'^feed\.rss$', views.LatestFeed()),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/register/$', views.UserRegistrationView.as_view()),
-    url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^accounts/', include('registration.backends.hmac.urls')),
     url(r'^comments/', include('django_comments.urls')),
 ]

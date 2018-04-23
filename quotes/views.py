@@ -14,7 +14,7 @@ from django.views.generic.edit import CreateView
 from quotes.models import Quote, QuoteVote
 from quotes.views_generic import QuoteViewMixin, QuoteListView, QuoteDetailView
 from quotes.forms import AddQuoteForm, UserRegistrationForm, SearchForm
-from registration.backends.default.views import RegistrationView
+from registration.backends.hmac.views import RegistrationView
 
 User = get_user_model()
 

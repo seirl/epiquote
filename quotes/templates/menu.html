@@ -30,18 +30,18 @@
                   href="/favourites/{{ request.user.username }}">
                   Favoris</a></li>
               <li><a tabindex="-1"
-                  href="/accounts/password/change/">
+                     href="{% url 'password_change' %}">
                   Changer de mot de passe</a></li>
               <li class="divider"></li>
-              <li><a tabindex="-1" href="/accounts/logout">Déconnexion</a></li>
+              <li><a tabindex="-1" href="{% url 'logout' %}">Déconnexion</a></li>
             </ul>
             </li>
           {% else %}
             <li class="{% active '^/accounts/login' %}">
-              <a href="/accounts/login">Connexion</a>
+                <a href="{% url 'login' %}">Connexion</a>
             </li>
             <li class="{% active '^/accounts/register' %}">
-              <a href="/accounts/register">Inscription</a>
+                <a href="{% url 'registration_register' %}">Inscription</a>
             </li>
           {% endif %}
         </ul>
