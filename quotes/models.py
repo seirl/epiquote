@@ -33,7 +33,7 @@ class Quote(models.Model):
 
     voters = models.ManyToManyField(User, through='QuoteVote',
                                     related_name='voted_quotes')
-    fans = models.ManyToManyField(User, related_name='favorites')
+    fans = models.ManyToManyField(User, related_name='favorites', blank=True)
 
     objects = QuoteManager()
 
