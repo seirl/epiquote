@@ -1,4 +1,5 @@
-<form class="navbar-form pull-right form-search" method="GET" action="/search">
+<form class="navbar-form pull-right form-search" method="GET"
+      action="{% url 'search_quotes' %}">
   <div class="input-append">
       <input type="text" style="height:auto" class="span3 search-query"
       name="q" />

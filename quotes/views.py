@@ -8,13 +8,13 @@ from django.contrib.syndication.views import Feed
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import View, TemplateView
 from django.views.generic.edit import CreateView
 
 from quotes.models import Quote, QuoteVote
 from quotes.views_generic import QuoteViewMixin, QuoteListView, QuoteDetailView
-from quotes.forms import AddQuoteForm, UserRegistrationForm, SearchForm
-from registration.backends.hmac.views import RegistrationView
+from quotes.forms import AddQuoteForm, SearchForm
 
 User = get_user_model()
 
@@ -103,7 +103,7 @@ class SearchQuotes(QuoteListView):
 class AddQuote(LoginRequiredMixin, CreateView):
     model = Quote
     form_class = AddQuoteForm
-    success_url = '/add_confirm'
+    success_url = reverse_lazy('add_confirm_quote')
     template_name = 'add.html'
 
     def form_valid(self, form):
@@ -113,10 +113,6 @@ class AddQuote(LoginRequiredMixin, CreateView):
 
 class AddQuoteConfirm(LoginRequiredMixin, TemplateView):
     template_name = 'add_confirm.html'
-
-
-class UserRegistrationView(RegistrationView):
-    form_class = UserRegistrationForm
 
 
 class AjaxFavouriteView(LoginRequiredMixin, View):

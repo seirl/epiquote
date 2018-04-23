@@ -8,7 +8,7 @@
   {% get_comment_list for quote as comment_list %}
   <div class="row" style="margin-top: 30px;">
     <div class="span10 offset1">
-      <h3>Commentaires</h3>
+      <h3 id="c">Commentaires</h3>
       <table class="table table-bordered">
         {% for comment in comment_list %}
           <tr>
@@ -43,7 +43,7 @@
           </div>
         </form>
       {% else %}
-        <p>Merci de vous  <a href="/accounts/login">connecter</a> pour laisser
+      <p>Merci de vous  <a href="{% url 'login' %}">connecter</a> pour laisser
         un commentaire.</p>
       {% endif %}
     </div>

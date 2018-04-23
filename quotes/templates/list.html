@@ -14,7 +14,7 @@
         </blockquote>
         <p style="margin-left: 20px;">
         <small>
-          <a href="/{{ quote.id }}">#{{ quote.id }}</a> −
+          <a href="{% url 'show_quote' quote.id %}">#{{ quote.id }}</a> −
           Score : <span id="s{{ quote.id }}">{{ quote.score }}</span>
           (<span id="t{{ quote.id }}">{{ quote.num_votes }}</span>
           vote{{ quote.num_votes|pluralize }})
@@ -41,7 +41,7 @@
               {% endif %} −
             {% endif %}
             {% get_comment_count for quote as comment_count %}
-            <a href="/{{ quote.id }}#c">{{ comment_count }}
+            <a href="{% url 'show_quote' quote.id %}#c">{{ comment_count }}
                 commentaire{{ comment_count|pluralize }}</a>
           </span>
         </small>

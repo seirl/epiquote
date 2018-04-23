@@ -7,16 +7,16 @@
       <div class="nav-collapse collapse">
         <ul class="nav">
           <li class="{% active '^/random' %}">
-            <a href="/random">Au hasard</a>
+            <a href="{% url 'random_quotes' %}">Au hasard</a>
           </li>
           <li class="{% active '^/last' %}">
-            <a href="/last">Dernières</a>
+            <a href="{% url 'last_quotes' %}">Dernières</a>
           </li>
           <li class="{% active '^/top' %}">
-            <a href="/top">Meilleures</a>
+            <a href="{% url 'top_quotes' %}">Meilleures</a>
           </li>
           <li class="{% active '^/add' %}">
-            <a href="/add">Ajouter</a>
+            <a href="{% url 'add_quote' %}">Ajouter</a>
           </li>
           {% if user.is_authenticated %}
             <li class="dropdown">
@@ -27,7 +27,7 @@
             <ul class="dropdown-menu" role="menu"
               aria-labelledby="dLabel">
               <li><a tabindex="-1"
-                  href="/favourites/{{ request.user.username }}">
+                  href="{% url 'favorite_quotes' request.user.username %}">
                   Favoris</a></li>
               <li><a tabindex="-1"
                      href="{% url 'password_change' %}">
