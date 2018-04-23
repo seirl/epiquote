@@ -2,6 +2,7 @@ import itertools
 import re
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
@@ -14,6 +15,8 @@ from django.views.generic.edit import CreateView
 from quotes.models import Quote, QuoteVote
 from quotes.views_generic import QuoteViewMixin, QuoteListView, QuoteDetailView
 from quotes.forms import AddQuoteForm, SearchForm
+
+User = get_user_model()
 
 
 class DetailQuote(QuoteDetailView):
@@ -51,7 +54,8 @@ class FavouriteQuotes(QuoteListView):
 
     def get_queryset(self):
         username = self.kwargs['username']
-        return super().get_queryset().filter(fans__username=username)
+        user = get_object_or_404(User, username=username)
+        return super().get_queryset().filter(fans=user)
 
 
 class HomeQuotes(QuoteListView):
