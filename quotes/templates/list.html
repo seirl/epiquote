@@ -18,6 +18,9 @@
           Score : <span id="s{{ quote.id }}">{{ quote.score }}</span>
           (<span id="t{{ quote.id }}">{{ quote.num_votes }}</span>
           vote{{ quote.num_votes|pluralize }})
+          
+          
+          
           {% if user.is_authenticated %}
             {% vote_for user quote as vote %}
             {% if not vote %}
@@ -28,12 +31,26 @@
                   onclick="vote('{{ quote.id }}', 'down');">(-)</a>
               </span>
             {% else %}
+              {% if vote.vote == 1 %}
               <span id="d{{ quote.id }}"> −
                 <a href="javascript:void(0)"
-                  onclick="vote('{{ quote.id }}', 'clear');">(Annuler Vote)</a>
+                  onclick="vote('{{ quote.id }}', 'clear', 1);"><b>(+)</b></a>
+                <a href="javascript:void(0)"
+                  onclick="vote('{{ quote.id }}', 'down', 1);">(-)</a>
               </span>
+              {% else %}
+                <span id="d{{ quote.id }}"> −
+                 <a href="javascript:void(0)"
+                   onclick="vote('{{ quote.id }}', 'up', -1);">(+)</a>
+                 <a href="javascript:void(0)"
+                   onclick="vote('{{ quote.id }}', 'clear', -1);"><b>(-)</b></a>
+               </span>
+              {% endif %}
             {% endif %}
           {% endif %}
+          
+          
+          
           <span style="margin-right: 20px;" class="pull-right">
             <a href="javascript:void(0);" onclick="rimshot();">♫</a> −
             {% if user.is_authenticated %}
