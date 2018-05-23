@@ -27,6 +27,11 @@
                 <a href="javascript:void(0)"
                   onclick="vote('{{ quote.id }}', 'down');">(-)</a>
               </span>
+            {% else %}
+              <span id="d{{ quote.id }}"> −
+                <a href="javascript:void(0)"
+                  onclick="vote('{{ quote.id }}', 'clear');">(Annuler Vote)</a>
+              </span>
             {% endif %}
           {% endif %}
           <span style="margin-right: 20px;" class="pull-right">
