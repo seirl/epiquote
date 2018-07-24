@@ -16,7 +16,9 @@ class QuoteViewMixin:
             if self.order == '?':
                 # Horrible workaround for this django bug:
                 # https://code.djangoproject.com/ticket/26390
-                qs = Quote.objects.raw(str(qs.query) + ' ORDER BY RANDOM()')
+                sql, params = qs.query.sql_with_params()
+                sql += ' ORDER BY RANDOM()'
+                qs = Quote.objects.raw(sql, params)
             else:
                 qs = qs.order_by(self.order)
         if self.limit is not None:
