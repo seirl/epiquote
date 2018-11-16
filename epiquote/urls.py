@@ -1,6 +1,5 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.contrib.auth import urls as auth_urls
 
 from epiquote import views
 
