@@ -15,20 +15,23 @@
         <p style="margin-left: 20px;">
         <small>
           <a href="{% url 'show_quote' quote.id %}">#{{ quote.id }}</a> −
-          Score : <span id="s{{ quote.id }}">{{ quote.score }}</span>
-          (<span id="t{{ quote.id }}">{{ quote.num_votes }}</span>
+
+          Score :
+          <span id="s{{ quote.id }}">
+            {{ quote.score }}</span>
+          (<span id="t{{ quote.id }}">{{ quote.num_votes }}
+          </span>
           vote{{ quote.num_votes|pluralize }})
           {% if user.is_authenticated %}
-            {% vote_for user quote as vote %}
-            {% if not vote %}
-              <span id="d{{ quote.id }}"> −
-                <a href="javascript:void(0)"
-                  onclick="vote('{{ quote.id }}', 'up');">(+)</a>
-                <a href="javascript:void(0)"
-                  onclick="vote('{{ quote.id }}', 'down');">(-)</a>
-              </span>
-            {% endif %}
+            {% vote_for user quote as vote %} −
+              <a href="#" id="dp{{ quote.id }}"
+                 class="{% if vote == 1 %}voteon{% endif %}"
+                 onclick="vote('{{ quote.id }}', 'up');">(+)</a>
+              <a href="#" id="dm{{ quote.id }}"
+                 class="{% if vote == -1 %}voteon{% endif %}"
+                 onclick="vote('{{ quote.id }}', 'down');">(-)</a>
           {% endif %}
+
           <span style="margin-right: 20px;" class="pull-right">
             <a href="javascript:void(0);" onclick="rimshot();">♫</a> −
             {% if user.is_authenticated %}

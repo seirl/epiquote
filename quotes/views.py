@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import View, TemplateView
@@ -133,13 +133,14 @@ class AjaxVoteView(LoginRequiredMixin, View):
     http_method_names = ['post']
 
     def post(self, *args, **kwargs):
-        VOTE_DIRECTIONS = {'up': 1, 'down': -1, 'clear': 0}
+        VOTE_DIRECTIONS = {'up': 1, 'down': -1}
         vote = VOTE_DIRECTIONS[self.kwargs['direction']]
         quote = get_object_or_404(Quote.objects.seen_by(self.request.user),
                                   id=self.kwargs['quote_id'])
         try:
             qv = QuoteVote.objects.get(user=self.request.user, quote=quote)
-            if vote == 0:
+            if vote == qv.vote:
+                vote = 0
                 qv.delete()
             else:
                 qv.vote = vote
@@ -147,7 +148,10 @@ class AjaxVoteView(LoginRequiredMixin, View):
         except QuoteVote.DoesNotExist:
             qv = QuoteVote(user=self.request.user, quote=quote, vote=vote)
             qv.save()
-        return HttpResponse('')
+        quote = Quote.objects.get(id=self.kwargs['quote_id'])
+        return JsonResponse({'score': quote.score,
+                             'num_votes': quote.num_votes,
+                             'current_vote': vote})
 
 
 class LatestFeed(QuoteViewMixin, Feed):

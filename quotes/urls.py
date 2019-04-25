@@ -19,7 +19,7 @@ urlpatterns = [
 
     url(r'^(?P<quote_id>\d+)/favourite$', views.AjaxFavouriteView.as_view(),
         name='ajax_favorite_quote'),
-    url(r'^(?P<quote_id>\d+)/(?P<direction>up|down|clear)vote/?$',
+    url(r'^(?P<quote_id>\d+)/(?P<direction>up|down)vote/?$',
         views.AjaxVoteView.as_view(),
         name='ajax_vote_quote'),
 ]

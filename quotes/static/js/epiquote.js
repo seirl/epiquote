@@ -11,24 +11,21 @@ function fav(id) {
 }
 
 function vote(slug, direction) {
-  $.ajax({url: '/' + slug + '/' + direction + 'vote/', type: 'post'});
-  var s = document.getElementById("s" + slug),
-    t = document.getElementById("t" + slug),
-    d = document.getElementById("d" + slug),
-    ns = parseInt(s.innerHTML, 10),
-    nt = parseInt(t.innerHTML, 10);
+  $.ajax({url: '/' + slug + '/' + direction + 'vote/', type: 'post'})
+    .done(function (data) {
+      $("#s" + slug).text(data.score)
+      $("#t" + slug).text(data.num_votes)
 
-  s.innerHTML = (ns + 1) + '';
-  if (direction == 'up') {
-    s.innerHTML = (ns + 1) + '';
-    t.innerHTML = (nt + 1) + '';
-    d.innerHTML = '';
-  }
-  else if (direction == 'down') {
-    s.innerHTML = (ns - 1) + '';
-    t.innerHTML = (nt + 1) + '';
-    d.innerHTML = '';
-  }
+      var dp = $("#dp" + slug);
+      var dm = $("#dm" + slug);
+      dp.removeClass("voteon");
+      dm.removeClass("voteon");
+      if (data.current_vote == +1)
+        dp.addClass("voteon");
+      if (data.current_vote == -1)
+        dm.addClass("voteon");
+    });
+  return false;
 }
 
 function rimshot() {
