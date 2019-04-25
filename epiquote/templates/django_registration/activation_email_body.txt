@@ -1,11 +1,15 @@
-Merci de vous êtres enregistré sur Epiquote !
-Vous pouvez dorénavant ajouter des quotes, voter pour vos quotes préférées et plus encore !
+Merci de vous être enregistré sur Epiquote !
 
-Merci de cliquer sur ce lien d'activation pour finaliser la création de votre compte :
+Vous pouvez dorénavant ajouter des quotes, voter pour vos quotes préférées et
+plus encore !
 
-http://{{ site.domain }}/accounts/activate/{{ activation_key }} 
+Merci de cliquer sur ce lien d'activation pour finaliser la création de votre
+compte :
 
-Vous avez {{ expiration_days }} jour{{ expiration_days|pluralize }} pour activer votre compte, après quoi vous devrez vous réenregistrer.
+http://{{ site.domain }}/accounts/activate/{{ activation_key }}
+
+Vous avez {{ expiration_days }} jour{{ expiration_days|pluralize }} pour
+activer votre compte, après quoi vous devrez vous réenregistrer.
 
 -- 
 Epiquote
