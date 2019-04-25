@@ -1,52 +1,50 @@
 {% load navigation %}
 
-<div class="navbar">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="brand" href="/">Epiquote</a>
-      <div class="nav-collapse collapse">
-        <ul class="nav">
-          <li class="{% active '^/random' %}">
-            <a href="{% url 'random_quotes' %}">Au hasard</a>
-          </li>
-          <li class="{% active '^/last' %}">
-            <a href="{% url 'last_quotes' %}">Dernières</a>
-          </li>
-          <li class="{% active '^/top' %}">
-            <a href="{% url 'top_quotes' %}">Meilleures</a>
-          </li>
-          <li class="{% active '^/add' %}">
-            <a href="{% url 'add_quote' %}">Ajouter</a>
-          </li>
-          {% if user.is_authenticated %}
-            <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              {{ request.user.username }}
-              <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu" role="menu"
-              aria-labelledby="dLabel">
-              <li><a tabindex="-1"
-                  href="{% url 'favorite_quotes' request.user.username %}">
-                  Favoris</a></li>
-              <li><a tabindex="-1"
-                     href="{% url 'password_change' %}">
-                  Changer de mot de passe</a></li>
-              <li class="divider"></li>
-              <li><a tabindex="-1" href="{% url 'logout' %}">Déconnexion</a></li>
-            </ul>
-            </li>
-          {% else %}
-            <li class="{% active '^/accounts/login' %}">
-                <a href="{% url 'login' %}">Connexion</a>
-            </li>
-            <li class="{% active '^/accounts/register' %}">
-                <a href="{% url 'register' %}">Inscription</a>
-            </li>
-          {% endif %}
-        </ul>
-        {% include "search.html" %}
-      </div>
+<nav class="navbar navbar-default">
+  <div class="container">
+    <a class="navbar-brand" href="/">Epiquote</a>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="{% active '^/random' %}">
+          <a href="{% url 'random_quotes' %}">Au hasard</a>
+        </li>
+        <li class="{% active '^/last' %}">
+          <a href="{% url 'last_quotes' %}">Dernières</a>
+        </li>
+        <li class="{% active '^/top' %}">
+          <a href="{% url 'top_quotes' %}">Meilleures</a>
+        </li>
+        <li class="{% active '^/add' %}">
+          <a href="{% url 'add_quote' %}">Ajouter</a>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            {{ request.user.username }}
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu" role="menu"
+                                    aria-labelledby="dLabel">
+            <li><a tabindex="-1"
+                   href="{% url 'favorite_quotes' request.user.username %}">
+                Favoris</a></li>
+            <li><a tabindex="-1"
+                   href="{% url 'password_change' %}">
+                Changer de mot de passe</a></li>
+            <li class="divider"></li>
+            <li><a tabindex="-1" href="{% url 'logout' %}">Déconnexion</a></li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="{% active '^/accounts/login' %}">
+          <a href="{% url 'login' %}">Connexion</a>
+        </li>
+        <li class="{% active '^/accounts/register' %}">
+          <a href="{% url 'register' %}">Inscription</a>
+        </li>
+        {% endif %}
+      </ul>
+      {% include "search.html" %}
     </div>
   </div>
-</div>
+</nav>

@@ -6,10 +6,10 @@
     <p>La création d'un compte vous permettra d'ajouter des citations, de
     voter pour vos citations favorites et bien plus encore !</p>
     <form method="POST" class="form-horizontal" action="">
+      <div class="col-md-6">
         {% csrf_token %}
-        <table>
-            {{ form|bootstrap }}
-        </table>
-        <input type="submit" class="btn btn-large" value="S'enregistrer" />
+        {{ form|bootstrap }}
+        <input type="submit" class="btn" value="S'enregistrer" />
+      </div>
     </form>
 {% endblock %}

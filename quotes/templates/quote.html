@@ -7,7 +7,7 @@
   {% include "list.html" %}
   {% get_comment_list for quote as comment_list %}
   <div class="row" style="margin-top: 30px;">
-    <div class="span10 offset1">
+    <div class="col-md-10 col-md-offset-1">
       <h3 id="c">Commentaires</h3>
       <table class="table table-bordered">
         {% for comment in comment_list %}
@@ -24,9 +24,9 @@
         <form action="{% comment_form_target %}"
           class="form-horizontal" method="POST">
           {% csrf_token %}
-          <div class="control-group required">
-            <label class="control-label" for="id_comment">Commentaire</label>
-            <div class="controls">
+          <div class="form-group required">
+            <label label-default class="col-lg-2 col-md-2 col-sm-3 col-xs-12 control-label" for="id_comment">Commentaire</label>
+            <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
               <textarea id="id_comment" rows="6" cols="40" style="width:60%"
                 name="comment"></textarea>
             </div>
@@ -37,7 +37,7 @@
           {{ form.timestamp }}
           {{ form.security_hash }}
           <input type="hidden" name="next" value="/{{ quote.id }}#c" />
-          <div class="controls">
+          <div class="col-sm-2 col-sm-offset-2">
             <input type="submit" class="btn" value="Ajouter un commentaire"
             id="id_submit" />
           </div>

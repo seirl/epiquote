@@ -3,13 +3,15 @@
 
 {% block title %}Ajouter une citation{% endblock %}
 {% block content %}
-  <form class="form-horizontal" method="POST" action="">
-    {% csrf_token %}
-    {{ form|bootstrap }}
-    <div class="control-group">
-      <div class="controls">
-        <input class="btn btn-large" type="submit" value="Soumettre" />
-      </div>
+  <form class="form-horizontal" method="POST" action="" role="form">
+    <div class="col-md-7">
+       {% csrf_token %}
+       {{ form|bootstrap_horizontal }}
+       <div class="form-group">
+         <div class="col-md-2 col-md-offset-2">
+           <input class="btn btn-defaultbtn-lg" type="submit" value="Soumettre" />
+         </div>
+       </div>
     </div>
   </form>
 {% endblock %}

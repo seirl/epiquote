@@ -1,20 +1,24 @@
 {% if is_paginated %}
-  <div class="span2 offset9 input-prepend input-append">
-    <form method="GET" action="{{ request.path }}">
-      {% if not page_obj.has_previous %}
-      <button class="btn btn-info disabled">←</button>
-      {% else %}
-      <a class="btn btn-info"
-        href="{{ request.path }}?page={{ page_obj.previous_page_number }}">←</a>
-      {% endif %}
-      <input type="text" class="span1" name="page" value="{{ page_obj.number }}" />
-      <span class="add-on">sur {{ page_obj.paginator.num_pages }}</span>
-      {% if not page_obj.has_next %}
-      <button class="btn btn-info disabled">→</button>
-      {% else %}
-      <a class="btn btn-info"
-        href="{{ request.path }}?page={{ page_obj.next_page_number }}">→</a>
-      {% endif %}
+  <div class="col-sm-3 col-sm-offset-9">
+    <form class="form-inline" method="GET" action="{{ request.path }}">
+      <div class="input-group">
+        <a class="btn btn-info input-group-addon
+                 {% if not page_obj.has_previous %}disabled{% endif %}"
+          {% if page_obj.has_previous %}
+            href="{{ request.path }}?page={{ page_obj.previous_page_number }}"
+          {% endif %}
+        >←</a>
+
+        <input type="text" class="form-control" name="page" value="{{ page_obj.number }}" />
+        <span class="input-group-addon">sur {{ page_obj.paginator.num_pages }}</span>
+
+        <a class="btn btn-info input-group-addon
+                 {% if not page_obj.has_next %}disabled{% endif %}"
+          {% if page_obj.has_next %}
+            href="{{ request.path }}?page={{ page_obj.next_page_number }}"
+          {% endif %}
+        >→</a>
+      </div>
     </form>
   </div>
 {% endif %}

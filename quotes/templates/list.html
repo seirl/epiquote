@@ -1,9 +1,9 @@
 {% load comments vote %}
 
-<table class="table-striped">
+<table class="table-striped" style="width: 100%">
   {% for quote in quotes %}
     <tr>
-      <td class="span12" style="{% if not quote.visible %}background-color:
+      <td style="{% if not quote.visible %}background-color:
           #F2DEDE{% endif %}">
         <blockquote>
           <p><small style="font-size: 0.9em;">
