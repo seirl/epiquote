@@ -1,11 +1,16 @@
-from django.conf.urls import include, url
 from django.contrib import admin
-from epiquote import views
+from django.urls import include, path
+from django_registration.backends.activation.views import RegistrationView
+
+from epiquote.forms import UserRegistrationForm
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^accounts/register/$', views.UserRegistrationView.as_view()),
-    url(r'^accounts/', include('registration.backends.hmac.urls')),
-    url(r'^comments/', include('django_comments.urls')),
-    url(r'^', include('quotes.urls')),
+    path('admin/', admin.site.urls),
+    path('accounts/register/',
+         RegistrationView.as_view(form_class=UserRegistrationForm),
+         name='register'),
+    path('accounts/', include('django_registration.backends.activation.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('comments/', include('django_comments.urls')),
+    path('', include('quotes.urls')),
 ]

@@ -116,8 +116,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django_comments',
+    'django_registration',
     'quotes',
-    'registration',
     'bootstrapform',
 )
 
