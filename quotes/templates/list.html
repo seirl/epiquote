@@ -33,15 +33,11 @@
           {% endif %}
 
           <span style="margin-right: 20px;" class="pull-right">
-            <a href="javascript:void(0);" onclick="rimshot();">♫</a> −
+            <a href="#" onclick="rimshot();">♫</a> −
             {% if user.is_authenticated %}
-              {% if request.user in quote.fans.all %}
-                <a onclick="fav('{{ quote.id }}');" id="f{{ quote.id }}"
-                  href="javascript:void(0)">&lt;/3</a>
-              {% else %}
-                <a onclick="fav('{{ quote.id }}');" id="f{{ quote.id }}"
-                    href="javascript:void(0)">&lt;3</a>
-              {% endif %} −
+              <a onclick="fav('{{ quote.id }}');" id="f{{ quote.id }}"
+                href="#">{% if request.user in quote.fans.all %}&lt;/3{% else %}&lt;3{% endif %}</a>
+              −
             {% endif %}
             {% get_comment_count for quote as comment_count %}
             <a href="{% url 'show_quote' quote.id %}#c">{{ comment_count }}
