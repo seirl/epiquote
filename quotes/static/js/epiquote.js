@@ -2,7 +2,6 @@ function fav(id) {
   $.ajax({url: '/' + id + '/favourite', type: 'post'});
   var q = document.getElementById("f" + id);
   q.innerHTML = (q.innerHTML == '&lt;3') ? '&lt;/3' : '&lt;3';
-  return false;
 }
 
 function vote(slug, direction) {
@@ -20,11 +19,9 @@ function vote(slug, direction) {
       if (data.current_vote == -1)
         dm.addClass("voteon");
     });
-  return false;
 }
 
 function rimshot() {
   document.getElementById('sound').innerHTML =
     "<audio src='/static/rimshot.wav' autoplay='autoplay'></audio>";
-  return false;
 }

@@ -26,16 +26,16 @@
             {% vote_for user quote as vote %} −
               <a href="#" id="dp{{ quote.id }}"
                  class="{% if vote == 1 %}voteon{% endif %}"
-                 onclick="vote('{{ quote.id }}', 'up');">(+)</a>
+                 onclick="vote('{{ quote.id }}', 'up'); return false;">(+)</a>
               <a href="#" id="dm{{ quote.id }}"
                  class="{% if vote == -1 %}voteon{% endif %}"
-                 onclick="vote('{{ quote.id }}', 'down');">(-)</a>
+                 onclick="vote('{{ quote.id }}', 'down'); return false;">(-)</a>
           {% endif %}
 
           <span style="margin-right: 20px;" class="pull-right">
-            <a href="#" onclick="rimshot();">♫</a> −
+            <a href="#" onclick="rimshot(); return false;">♫</a> −
             {% if user.is_authenticated %}
-              <a onclick="fav('{{ quote.id }}');" id="f{{ quote.id }}"
+              <a onclick="fav('{{ quote.id }}'); return false;" id="f{{ quote.id }}"
                 href="#">{% if request.user in quote.fans.all %}&lt;/3{% else %}&lt;3{% endif %}</a>
               −
             {% endif %}
