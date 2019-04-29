@@ -9,6 +9,7 @@
     {% include "start_body.html" %}
     {% include "menu.html" %}
     <div class="container">
+      {% include "messages.html" %}
       <h1>{% block title %}{% endblock %}</h1>
       {% block content %}{% endblock %}
     </div>

@@ -1,3 +1,5 @@
+from django.contrib.messages import constants as messages
+
 # Django settings for epiquote project.
 
 DEBUG = False
@@ -101,6 +103,8 @@ MIDDLEWARE = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'epiquote.urls'
@@ -116,10 +120,15 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+
+    # Vendor
     'django_comments',
     'django_registration',
-    'quotes',
     'bootstrapform',
+    'social_django',
+
+    # Epiquote
+    'quotes',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -156,11 +165,24 @@ LOGGING = {
     }
 }
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 ACCOUNT_ACTIVATION_DAYS = 1
 DEFAULT_FROM_EMAIL = 'Epiquote <noreply@epiquote.fr>'
 LOGIN_REDIRECT_URL = '/'
+LOGIN_ERROR_URL = '/accounts/login'
 DATABASE_ENGINE = 'sqlite3'
 AUTH_PROFILE_MODULE = 'quotes.UserProfile'
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
 
 # Quotes pagination
 QUOTES_MAX_PAGE = 50
@@ -170,6 +192,8 @@ QUOTES_MAX_PAGE_HOME = 5
 ENABLE_EPITA_CONNECT = False
 SOCIAL_AUTH_EPITA_SCOPE = ['epita']
 SOCIAL_AUTH_EPITA_EXTRA_DATA = ['promo']
+SOCIAL_AUTH_EPITA_KEY = None
+SOCIAL_AUTH_EPITA_SECRET = None
 SOCIAL_AUTH_PIPELINE = (
     # Get details from the CRI
     'social_core.pipeline.social_auth.social_details',

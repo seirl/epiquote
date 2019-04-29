@@ -24,14 +24,9 @@ DATABASES = {
 # ENABLE_EPITA_CONNECT = True
 # SOCIAL_AUTH_EPITA_KEY = "CHANGEME"
 # SOCIAL_AUTH_EPITA_SECRET = "CHANGEME"
-#
-# INSTALLED_APPS += ('social_django',)
+# AUTHENTICATION_BACKENDS += ('epita_connect.backend.EpitaOpenIdConnect',)
 # if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
 #     SOCIAL_AUTH_POSTGRES_JSONFIELD = True
-# AUTHENTICATION_BACKENDS = (
-#     'epita_connect.backend.EpitaOpenIdConnect',
-#     'django.contrib.auth.backends.ModelBackend',
-# )
 
 # Uncomment to enable showing the emails on the console
 #

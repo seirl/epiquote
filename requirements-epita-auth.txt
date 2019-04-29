@@ -1,3 +1,0 @@
-social-auth-app-django
-social-auth-backend-epita
-social-auth-core[openidconnect]

@@ -26,12 +26,14 @@ def associate_by_login(backend, details, user=None, *args, **kwargs):
             return {'user': users[0], 'is_new': False}
 
 
+class AuthForbiddenStaff(AuthForbidden):
+    def __str__(self):
+        return "Cannot use social log-in on staff accounts"
+
+
 def protect_staff(backend, details, user=None, *args, **kwargs):
     """Prevent associating existing staff users with an authentication scheme
     out of our control.
     """
     if user and user.is_staff:
-        raise AuthForbidden(
-            backend,
-            "Cannot use social log-in on staff accounts."
-        )
+        raise AuthForbiddenStaff(backend)
