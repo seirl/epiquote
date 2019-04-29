@@ -87,6 +87,7 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.template.context_processors.request',
                 'django.contrib.messages.context_processors.messages',
+                'epiquote.context_processors.inject_settings',
             ],
         },
     },
@@ -159,3 +160,26 @@ AUTH_PROFILE_MODULE = 'quotes.UserProfile'
 # Quotes pagination
 QUOTES_MAX_PAGE = 50
 QUOTES_MAX_PAGE_HOME = 5
+
+# EPITA Connect
+ENABLE_EPITA_CONNECT = False
+SOCIAL_AUTH_EPITA_SCOPE = ['epita']
+SOCIAL_AUTH_EPITA_EXTRA_DATA = ['promo']
+SOCIAL_AUTH_PIPELINE = (
+    # Get details from the CRI
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+
+    # Merge users with identical login/email
+    # (we trust the CRI to never f*ck it up)
+    'social_core.pipeline.social_auth.associate_by_email',
+    'epiquote.social_pipeline.associate_by_login',
+
+    # Create new users if needed
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
