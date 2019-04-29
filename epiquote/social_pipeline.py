@@ -1,4 +1,4 @@
-from social_core.exceptions import AuthException
+from social_core.exceptions import AuthException, AuthForbidden
 
 
 def associate_by_login(backend, details, user=None, *args, **kwargs):
@@ -24,3 +24,14 @@ def associate_by_login(backend, details, user=None, *args, **kwargs):
             )
         else:
             return {'user': users[0], 'is_new': False}
+
+
+def protect_staff(backend, details, user=None, *args, **kwargs):
+    """Prevent associating existing staff users with an authentication scheme
+    out of our control.
+    """
+    if user and user.is_staff:
+        raise AuthForbidden(
+            backend,
+            "Cannot use social log-in on staff accounts."
+        )

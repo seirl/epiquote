@@ -181,6 +181,7 @@ SOCIAL_AUTH_PIPELINE = (
     # (we trust the CRI to never f*ck it up)
     'social_core.pipeline.social_auth.associate_by_email',
     'epiquote.social_pipeline.associate_by_login',
+    'epiquote.social_pipeline.protect_staff',
 
     # Create new users if needed
     'social_core.pipeline.user.create_user',
