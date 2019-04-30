@@ -1,11 +1,16 @@
 from social_core.exceptions import AuthException, AuthForbidden
 
+class AuthForbiddenNotActivated(AuthForbidden):
+    def __str__(self):
+        return "This account is not activated, or it has been banned"
 
 def associate_by_login(backend, details, user=None, *args, **kwargs):
     """
     Associate current auth with a user with the same username in the DB.
     """
     if user:
+        if not user.is_active:
+            raise AuthForbiddenNotActivated(backend)
         return None
 
     username = details.get('username')
