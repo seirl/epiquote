@@ -1,4 +1,4 @@
-django
+django<3
 django-bootstrap-form
 django-contrib-comments
 django-registration
