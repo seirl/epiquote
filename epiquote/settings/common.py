@@ -190,7 +190,7 @@ QUOTES_MAX_PAGE_HOME = 5
 
 # EPITA Connect
 ENABLE_EPITA_CONNECT = False
-SOCIAL_AUTH_EPITA_SCOPE = ['epita']
+SOCIAL_AUTH_EPITA_SCOPE = ['email', 'epita']
 SOCIAL_AUTH_EPITA_EXTRA_DATA = ['promo']
 SOCIAL_AUTH_EPITA_KEY = None
 SOCIAL_AUTH_EPITA_SECRET = None
@@ -204,7 +204,9 @@ SOCIAL_AUTH_PIPELINE = (
     # Merge users with identical login/email
     # (we trust the CRI to never f*ck it up)
     'social_core.pipeline.social_auth.associate_by_email',
-    'epiquote.social_pipeline.associate_by_login',
+    'social_auth_backend_epita.pipeline.merge_old_users',
+    'social_auth_backend_epita.pipeline.update_email',
+    # 'epiquote.social_pipeline.associate_by_login',
     'epiquote.social_pipeline.protect_staff',
 
     # Create new users if needed
