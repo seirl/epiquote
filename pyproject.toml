@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "epiquote"
+version = "0.0.0"
+description = "A quote database website"
+authors = ["Antoine Pietri <antoine.pietri1@gmail.com>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+repository = "https://github.com/seirl/epiquote"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4.0"
+django = "^4.2.1"
+django-bootstrap-form = "^3.4"
+django-contrib-comments = "^2.2.0"
+psycopg2-binary = "^2.9.6"
+django-registration = "^3.3"
+social-auth-backend-epita = "^1.0.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

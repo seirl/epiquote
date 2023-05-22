@@ -9,7 +9,7 @@ quotes (from IRC or real life).
     cd epiquote
     python3 -m venv .venv
     source .venv/bin/activate
-    pip install -r requirements.txt
+    pip install -e .
     cp epiquote/settings/{conf.sample.py,dev.py}
     $EDITOR epiquote/settings/dev.py
     python3 manage.py migrate

@@ -1,6 +1,0 @@
-django<5
-django-bootstrap-form
-django-contrib-comments
-django-registration
-psycopg2-binary
-social-auth-backend-epita
