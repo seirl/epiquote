@@ -195,23 +195,16 @@ SOCIAL_AUTH_EPITA_EXTRA_DATA = ['promo']
 SOCIAL_AUTH_EPITA_KEY = None
 SOCIAL_AUTH_EPITA_SECRET = None
 SOCIAL_AUTH_PIPELINE = (
-    # Get details from the CRI
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-
-    # Merge users with identical login/email
-    # (we trust the CRI to never f*ck it up)
-    'social_core.pipeline.social_auth.associate_by_email',
-    'social_auth_backend_epita.pipeline.merge_old_users',
-    'social_auth_backend_epita.pipeline.update_email',
-    # 'epiquote.social_pipeline.associate_by_login',
-    'epiquote.social_pipeline.protect_staff',
-
-    # Create new users if needed
-    'social_core.pipeline.user.create_user',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details',
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.social_auth.auth_allowed",
+    "social_auth_backend_epita.pipeline.deny_old_users",
+    "social_core.pipeline.social_auth.social_user",
+    "social_core.pipeline.user.get_username",
+    "social_auth_backend_epita.pipeline.merge_old_users",
+    "social_core.pipeline.user.create_user",
+    "social_core.pipeline.social_auth.associate_user",
+    "social_core.pipeline.social_auth.load_extra_data",
+    "social_core.pipeline.user.user_details",
+    "social_auth_backend_epita.pipeline.update_email",
 )
