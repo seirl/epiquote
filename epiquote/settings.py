@@ -1,21 +1,45 @@
+import configparser
+import dj_database_url
+import os
 from django.contrib.messages import constants as messages
 
-# Django settings for epiquote project.
+config = configparser.ConfigParser()
+if config_path := os.getenv('EPIQUOTE_SETTINGS_PATH'):
+    config.read(config_path)
+if creds_path := os.getenv('EPIQUOTE_CREDS_PATH'):
+    config.read(creds_path)
 
-DEBUG = False
+DEBUG = not config.getboolean('epiquote', 'prod', fallback=False)
+
+if DEBUG:
+    SECRET_KEY = config.get('epiquote', 'secret_key', fallback='CHANGE_ME')
+else:
+    SECRET_KEY = config.get('epiquote', 'secret_key')
+
+ALLOWED_HOSTS = [
+    h.strip() for h in config.get(
+        'epiquote', 'allowed_hosts', fallback='127.0.0.1,::1,localhost'
+    ).split(',')
+]
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config.get(
+            'epiquote.db',
+            'database_url',
+            fallback='sqlite:///epiquote.db',
+        )
+    ),
+}
+
+if config.getboolean('epiquote', 'show_emails_on_console', fallback=False):
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'epiquote.db',
-    }
-}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -53,7 +77,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = config.get('epiquote', 'static_root', fallback='')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -103,8 +127,6 @@ MIDDLEWARE = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'social_django.middleware.SocialAuthExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'epiquote.urls'
@@ -125,7 +147,6 @@ INSTALLED_APPS = (
     'django_comments',
     'django_registration',
     'bootstrapform',
-    'social_django',
 
     # Epiquote
     'quotes',
@@ -189,11 +210,21 @@ QUOTES_MAX_PAGE = 50
 QUOTES_MAX_PAGE_HOME = 5
 
 # EPITA Connect
-ENABLE_EPITA_CONNECT = False
+ENABLE_EPITA_CONNECT = config.getboolean(
+    'epita_connect', 'enable', fallback=False
+)
 SOCIAL_AUTH_EPITA_SCOPE = ['email', 'epita']
 SOCIAL_AUTH_EPITA_EXTRA_DATA = ['promo']
-SOCIAL_AUTH_EPITA_KEY = None
-SOCIAL_AUTH_EPITA_SECRET = None
+SOCIAL_AUTH_EPITA_KEY = config.get('epita_connect', 'auth_key', fallback=None)
+SOCIAL_AUTH_EPITA_SECRET = config.get(
+    'epita_connect', 'auth_secret', fallback=None
+)
+if ENABLE_EPITA_CONNECT:
+    INSTALLED_APPS += ('social_django',)
+    AUTHENTICATION_BACKENDS += ('epita_connect.backend.EpitaOpenIdConnect',)
+    MIDDLEWARE += ('social_django.middleware.SocialAuthExceptionMiddleware',)
+if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
+    SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.social_details",
     "social_core.pipeline.social_auth.social_uid",
