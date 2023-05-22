@@ -22,6 +22,7 @@ def make_visibleaccepted(modeladmin, request, queryset):
 make_visibleaccepted.short_description = 'Accepter et rendre visible'
 
 
+@admin.register(Quote)
 class QuoteAdmin(admin.ModelAdmin):
     list_display = ('author', 'context', 'content', 'date', 'accepted',
                     'visible')
@@ -31,4 +32,3 @@ class QuoteAdmin(admin.ModelAdmin):
                make_accepted]
 
 
-admin.site.register(Quote, QuoteAdmin)

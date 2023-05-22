@@ -1,8 +1,6 @@
-django<3
+django<5
 django-bootstrap-form
 django-contrib-comments
 django-registration
 psycopg2-binary
-social-auth-app-django
 social-auth-backend-epita
-social-auth-core[openidconnect]

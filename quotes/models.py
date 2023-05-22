@@ -22,6 +22,7 @@ class QuoteManager(models.Manager):
 
 
 class Quote(models.Model):
+    id = models.AutoField(primary_key=True)
     author = models.CharField(max_length=50, verbose_name='auteur')
     context = models.TextField(verbose_name='contexte', blank=True)
     content = models.TextField(verbose_name='contenu')
@@ -47,6 +48,7 @@ class QuoteVote(models.Model):
         (-1, '-1'),
     )
 
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='votes')
     quote = models.ForeignKey(Quote, on_delete=models.CASCADE,
