@@ -15,7 +15,9 @@ django-contrib-comments = "^2.2.0"
 psycopg2-binary = "^2.9.6"
 django-registration = "^3.3"
 dj-database-url = "^2.0.0"
-social-auth-backend-epita = "^1.0.2"
+# Waiting for Django 4 compat:
+# https://gitlab.cri.epita.fr/cri/packages/social-auth-backend-epita/-/merge_requests/5
+# social-auth-backend-epita = "^1.0.2"
 
 [build-system]
 requires = ["poetry-core"]
