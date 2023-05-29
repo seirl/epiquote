@@ -2,6 +2,9 @@ import configparser
 import dj_database_url
 import os
 from django.contrib.messages import constants as messages
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 config = configparser.ConfigParser()
 if config_path := os.getenv('EPIQUOTE_SETTINGS_PATH'):
@@ -55,6 +58,10 @@ LANGUAGE_CODE = 'fr-fr'
 
 SITE_ID = 1
 
+USE_X_FORWARDED_HOST = config.getboolean(
+    'epiquote', 'use_x_forwarded_host', fallback=False
+)
+
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
@@ -102,7 +109,7 @@ STATICFILES_FINDERS = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['epiquote/templates'],
+        'DIRS': [BASE_DIR / 'epiquote/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'debug': DEBUG,
