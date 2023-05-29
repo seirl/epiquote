@@ -12,9 +12,11 @@ if creds_path := os.getenv('EPIQUOTE_CREDS_PATH'):
 DEBUG = not config.getboolean('epiquote', 'prod', fallback=False)
 
 if DEBUG:
-    SECRET_KEY = config.get('epiquote', 'secret_key', fallback='CHANGE_ME')
+    SECRET_KEY = config.get(
+        'epiquote', 'secret_key', raw=True, fallback='CHANGE_ME'
+    )
 else:
-    SECRET_KEY = config.get('epiquote', 'secret_key')
+    SECRET_KEY = config.get('epiquote', 'secret_key', raw=True)
 
 ALLOWED_HOSTS = [
     h.strip() for h in config.get(
