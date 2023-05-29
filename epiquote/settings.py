@@ -27,7 +27,7 @@ ALLOWED_HOSTS = [
 DATABASES = {
     'default': dj_database_url.config(
         default=config.get(
-            'epiquote.db',
+            'epiquote',
             'database_url',
             fallback='sqlite:///epiquote.db',
         )
