@@ -199,6 +199,7 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 
 ACCOUNT_ACTIVATION_DAYS = 1
 DEFAULT_FROM_EMAIL = 'Epiquote <noreply@epiquote.fr>'
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 LOGIN_REDIRECT_URL = '/'
 LOGIN_ERROR_URL = '/accounts/login'
 DATABASE_ENGINE = 'sqlite3'
