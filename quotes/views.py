@@ -140,7 +140,8 @@ class AjaxVoteView(LoginRequiredMixin, View):
         VOTE_DIRECTIONS = {'up': 1, 'down': -1}
         vote = VOTE_DIRECTIONS[self.kwargs['direction']]
         quote = get_object_or_404(
-            Quote.objects.seen_by(self.request.user), id=self.kwargs['quote_id']
+            Quote.objects.seen_by(self.request.user),
+            id=self.kwargs['quote_id'],
         )
         try:
             qv = QuoteVote.objects.get(user=self.request.user, quote=quote)
