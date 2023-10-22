@@ -15,11 +15,6 @@ urlpatterns = [
     ),
     path('<int:pk>', views.DetailQuote.as_view(), name='show_quote'),
     path('add', views.AddQuote.as_view(), name='add_quote'),
-    path(
-        'add_confirm',
-        views.AddQuoteConfirm.as_view(),
-        name='add_confirm_quote',
-    ),
     re_path(r'^feed\.rss$', views.LatestFeed(), name='feed_quotes'),
     path(
         '<int:quote_id>/favourite',

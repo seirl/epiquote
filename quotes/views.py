@@ -4,12 +4,13 @@ import re
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import View, TemplateView
+from django.views.generic import View
 from django.views.generic.edit import CreateView
 
 from quotes.models import Quote, QuoteVote
@@ -102,19 +103,19 @@ class SearchQuotes(QuoteListView):
         return super().get_queryset().filter(f)
 
 
-class AddQuote(LoginRequiredMixin, CreateView):
+class AddQuote(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Quote
     form_class = AddQuoteForm
-    success_url = reverse_lazy('add_confirm_quote')
+    success_url = reverse_lazy('home_quotes')
+    success_message = """
+        Merci ! La citation a bien été enregistrée. Elle sera disponible dès
+        qu'un des modérateurs l'aura validée.
+    """
     template_name = 'add.html'
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
-
-
-class AddQuoteConfirm(LoginRequiredMixin, TemplateView):
-    template_name = 'add_confirm.html'
 
 
 class AjaxFavouriteView(LoginRequiredMixin, View):
