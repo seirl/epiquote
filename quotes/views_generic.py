@@ -22,7 +22,7 @@ class QuoteViewMixin:
             else:
                 qs = qs.order_by(self.order)
         if self.limit is not None:
-            qs = qs[:self.limit]
+            qs = qs[: self.limit]
         return qs
 
 

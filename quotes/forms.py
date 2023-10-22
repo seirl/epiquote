@@ -22,5 +22,6 @@ class AddQuoteForm(forms.ModelForm):
         widgets = {
             'context': forms.TextInput(),
             'content': forms.Textarea(
-                attrs={'cols': '140', 'rows': '10', 'class': 'add-quote'}),
+                attrs={'cols': '140', 'rows': '10', 'class': 'add-quote'}
+            ),
         }

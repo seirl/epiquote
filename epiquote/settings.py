@@ -22,7 +22,8 @@ else:
     SECRET_KEY = config.get('epiquote', 'secret_key', raw=True)
 
 ALLOWED_HOSTS = [
-    h.strip() for h in config.get(
+    h.strip()
+    for h in config.get(
         'epiquote', 'allowed_hosts', fallback='127.0.0.1,::1,localhost'
     ).split(',')
 ]
@@ -151,12 +152,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-
     # Vendor
     'django_comments',
     'django_registration',
     'bootstrapform',
-
     # Epiquote
     'quotes',
 )
@@ -170,21 +169,19 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
+        'require_debug_false': {'()': 'django.utils.log.RequireDebugFalse'}
     },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
+            'class': 'django.utils.log.AdminEmailHandler',
         },
         'console_debug_false': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'logging.StreamHandler',
-        }
+        },
     },
     'loggers': {
         'django.request': {
@@ -192,12 +189,10 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-    }
+    },
 }
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-)
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 
 ACCOUNT_ACTIVATION_DAYS = 1
 DEFAULT_FROM_EMAIL = 'Epiquote <noreply@epiquote.fr>'

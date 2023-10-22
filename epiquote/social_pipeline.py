@@ -19,8 +19,7 @@ def associate_by_login(backend, details, user=None, *args, **kwargs):
             return None
         elif len(users) > 1:
             raise AuthException(
-                backend,
-                'The given username is associated with another account'
+                backend, 'The given username is associated with another account'
             )
         else:
             return {'user': users[0], 'is_new': False}

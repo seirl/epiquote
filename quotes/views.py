@@ -66,8 +66,9 @@ class HomeQuotes(QuoteListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['top'] = (Quote.objects.seen_by(self.request.user)
-                          .order_by('-score')[:settings.QUOTES_MAX_PAGE_HOME])
+        context['top'] = Quote.objects.seen_by(self.request.user).order_by(
+            '-score'
+        )[: settings.QUOTES_MAX_PAGE_HOME]
         return context
 
 
@@ -93,9 +94,11 @@ class SearchQuotes(QuoteListView):
             return Quote.objects.none()
         f = Q()
         for w in terms:
-            f &= (Q(content__iregex=w)
-                  | Q(context__iregex=w)
-                  | Q(author__iregex=w))
+            f &= (
+                Q(content__iregex=w)
+                | Q(context__iregex=w)
+                | Q(author__iregex=w)
+            )
         return super().get_queryset().filter(f)
 
 
@@ -118,8 +121,10 @@ class AjaxFavouriteView(LoginRequiredMixin, View):
     http_method_names = ['post']
 
     def post(self, *args, **kwargs):
-        quote = get_object_or_404(Quote.objects.seen_by(self.request.user),
-                                  id=int(self.kwargs['quote_id']))
+        quote = get_object_or_404(
+            Quote.objects.seen_by(self.request.user),
+            id=int(self.kwargs['quote_id']),
+        )
         if self.request.user in quote.fans.all():
             quote.fans.remove(self.request.user)
         else:
@@ -134,8 +139,9 @@ class AjaxVoteView(LoginRequiredMixin, View):
     def post(self, *args, **kwargs):
         VOTE_DIRECTIONS = {'up': 1, 'down': -1}
         vote = VOTE_DIRECTIONS[self.kwargs['direction']]
-        quote = get_object_or_404(Quote.objects.seen_by(self.request.user),
-                                  id=self.kwargs['quote_id'])
+        quote = get_object_or_404(
+            Quote.objects.seen_by(self.request.user), id=self.kwargs['quote_id']
+        )
         try:
             qv = QuoteVote.objects.get(user=self.request.user, quote=quote)
             if vote == qv.vote:
@@ -148,9 +154,13 @@ class AjaxVoteView(LoginRequiredMixin, View):
             qv = QuoteVote(user=self.request.user, quote=quote, vote=vote)
             qv.save()
         quote = Quote.objects.get(id=self.kwargs['quote_id'])
-        return JsonResponse({'score': quote.score,
-                             'num_votes': quote.num_votes,
-                             'current_vote': vote})
+        return JsonResponse(
+            {
+                'score': quote.score,
+                'num_votes': quote.num_votes,
+                'current_vote': vote,
+            }
+        )
 
 
 class LatestFeed(QuoteViewMixin, Feed):
