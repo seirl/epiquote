@@ -1,5 +1,6 @@
 import configparser
 import dj_database_url
+import email.utils
 import os
 from django.contrib.messages import constants as messages
 from pathlib import Path
@@ -41,9 +42,11 @@ DATABASES = {
 if config.getboolean('epiquote', 'show_emails_on_console', fallback=False):
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
+ADMINS = [
+    email.utils.parseaddr(h.strip())
+    for h in config.get('epiquote', 'admins', fallback='').split(',')
+]
+
 
 MANAGERS = ADMINS
 
