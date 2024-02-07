@@ -13,7 +13,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
-django = "^4.2.7"
+django = "^4.2.10"
 django-bootstrap-form = "^3.4"
 django-contrib-comments = "^2.2.0"
 psycopg2-binary = "^2.9.6"
