@@ -12,7 +12,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
+python = ">=3.11,<4.0"
 django = "^4.2.11"
 django-bootstrap-form = "^3.4"
 django-contrib-comments = "^2.2.0"
@@ -22,6 +22,12 @@ dj-database-url = "^2.0.0"
 # Waiting for Django 4 compat:
 # https://gitlab.cri.epita.fr/cri/packages/social-auth-backend-epita/-/merge_requests/5
 # social-auth-backend-epita = "^1.0.2"
+
+gunicorn = { version = "^23.0.0", optional = true }
+ipython = { version = "^9.6.0", optional = true }
+
+[tool.poetry.extras]
+prod = ["gunicorn", "ipython"]
 
 [build-system]
 requires = ["poetry-core"]
