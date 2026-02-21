@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "epiquote"
 version = "0.0.0"
@@ -31,6 +35,9 @@ Repository = "https://github.com/seirl/epiquote"
 
 [tool.hatch.build.targets.wheel]
 packages = ["epiquote", "quotes"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.black]
 line-length = 79
