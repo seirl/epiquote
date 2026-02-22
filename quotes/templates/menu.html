@@ -1,46 +1,57 @@
 {% load navigation %}
 
-<nav class="navbar navbar-default">
-  <div class="container">
-    <a class="navbar-brand" href="/">Epiquote</a>
-    <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
+<nav class="bg-gray-100 border-b border-gray-200 py-2">
+  <div class="container mx-auto px-4 flex justify-between items-center">
+    <div class="flex items-center gap-6">
+      <a class="text-xl font-bold" href="/">Epiquote</a>
+      <ul class="flex gap-4">
         <li class="{% active '^/random' %}">
-          <a href="{% url 'random_quotes' %}">Au hasard</a>
+          <a href="{% url 'random_quotes' %}" class="text-gray-700 hover:text-black">Au hasard</a>
         </li>
         <li class="{% active '^/last' %}">
-          <a href="{% url 'last_quotes' %}">Dernières</a>
+          <a href="{% url 'last_quotes' %}" class="text-gray-700 hover:text-black">Dernières</a>
         </li>
         <li class="{% active '^/top' %}">
-          <a href="{% url 'top_quotes' %}">Meilleures</a>
+          <a href="{% url 'top_quotes' %}" class="text-gray-700 hover:text-black">Meilleures</a>
         </li>
         <li class="{% active '^/add' %}">
-          <a href="{% url 'add_quote' %}">Ajouter</a>
+          <a href="{% url 'add_quote' %}" class="text-gray-700 hover:text-black">Ajouter</a>
         </li>
+      </ul>
+    </div>
+    <div class="flex items-center gap-4">
+      <ul class="flex gap-4">
         {% if user.is_authenticated %}
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <li class="relative" x-data="{ open: false }">
+          <button @click="open = !open" @click.outside="open = false" class="flex items-center gap-1 text-gray-700 hover:text-black focus:outline-none">
             {{ request.user.username }}
-            <b class="caret"></b>
-          </a>
-          <ul class="dropdown-menu" role="menu"
-                                    aria-labelledby="dLabel">
-            <li><a tabindex="-1"
+            <svg class="w-4 h-4 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <ul x-show="open"
+              x-transition:enter="transition ease-out duration-100"
+              x-transition:enter-start="opacity-0 scale-95"
+              x-transition:enter-end="opacity-100 scale-100"
+              x-transition:leave="transition ease-in duration-75"
+              x-transition:leave-start="opacity-100 scale-100"
+              x-transition:leave-end="opacity-0 scale-95"
+              class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10"
+              style="display: none;">
+            <li><a class="block px-4 py-2 hover:bg-gray-100"
                    href="{% url 'favorite_quotes' request.user.username %}">
                 Favoris</a></li>
-            <li><a tabindex="-1"
+            <li><a class="block px-4 py-2 hover:bg-gray-100"
                    href="{% url 'password_change' %}">
                 Changer de mot de passe</a></li>
-            <li class="divider"></li>
-            <li><a tabindex="-1" href="{% url 'logout' %}">Déconnexion</a></li>
+            <li class="border-t border-gray-200"></li>
+            <li><a class="block px-4 py-2 hover:bg-gray-100" href="{% url 'logout' %}">Déconnexion</a></li>
           </ul>
         </li>
         {% else %}
         <li class="{% active '^/accounts/login' %}">
-          <a href="{% url 'login' %}">Connexion</a>
+          <a href="{% url 'login' %}" class="text-gray-700 hover:text-black">Connexion</a>
         </li>
         <li class="{% active '^/accounts/register' %}">
-          <a href="{% url 'register' %}">Inscription</a>
+          <a href="{% url 'register' %}" class="text-gray-700 hover:text-black">Inscription</a>
         </li>
         {% endif %}
       </ul>

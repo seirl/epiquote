@@ -14,7 +14,6 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "django>=4.2.28,<5.0.0",
-    "django-bootstrap-form @ git+https://github.com/seirl/django-bootstrap-form",
     "django-contrib-comments>=2.2.0,<3.0.0",
     "psycopg2-binary>=2.9.6,<3.0.0",
     "django-registration>=3.3,<4.0.0",
@@ -22,6 +21,8 @@ dependencies = [
     # Waiting for Django 4 compat:
     # https://gitlab.cri.epita.fr/cri/packages/social-auth-backend-epita/-/merge_requests/5
     # "social-auth-backend-epita>=1.0.2,<2.0.0",
+    "django-crispy-forms>=2.5",
+    "crispy-tailwind>=1.0.3",
 ]
 
 [project.optional-dependencies]

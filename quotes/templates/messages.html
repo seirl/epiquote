@@ -1,6 +1,6 @@
 {% if messages %}
   {% for message in messages %}
-    <div class="alert {% if message.tags %}{{ message.tags }}{% endif %}" role="alert">
+    <div class="border px-4 py-3 rounded relative mb-4 {% if message.tags %}{{ message.tags }}{% endif %}" role="alert">
         {{ message }}
     </div>
   {% endfor %}

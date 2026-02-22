@@ -158,10 +158,15 @@ INSTALLED_APPS = (
     # Vendor
     'django_comments',
     'django_registration',
-    'bootstrapform',
+    'crispy_forms',
+    'crispy_tailwind',
     # Epiquote
     'quotes',
 )
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
+CRISPY_TEMPLATE_PACK = "tailwind"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -206,11 +211,11 @@ DATABASE_ENGINE = 'sqlite3'
 AUTH_PROFILE_MODULE = 'quotes.UserProfile'
 
 MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-info',
-    messages.INFO: 'alert-info',
-    messages.SUCCESS: 'alert-success',
-    messages.WARNING: 'alert-warning',
-    messages.ERROR: 'alert-danger',
+    messages.DEBUG: 'bg-blue-100 border-blue-400 text-blue-700',
+    messages.INFO: 'bg-blue-100 border-blue-400 text-blue-700',
+    messages.SUCCESS: 'bg-green-100 border-green-400 text-green-700',
+    messages.WARNING: 'bg-yellow-100 border-yellow-400 text-yellow-700',
+    messages.ERROR: 'bg-red-100 border-red-400 text-red-700',
 }
 
 # Quotes pagination

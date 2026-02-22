@@ -8,9 +8,9 @@
   <body>
     {% include "start_body.html" %}
     {% include "menu.html" %}
-    <div class="container">
+    <div class="container mx-auto px-4">
       {% include "messages.html" %}
-      <h1>{% block title %}{% endblock %}</h1>
+      <h1 class="text-3xl font-bold my-4">{% block title %}{% endblock %}</h1>
       {% block content %}{% endblock %}
     </div>
         {% include "footer.html" %}

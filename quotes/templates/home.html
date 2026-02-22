@@ -5,16 +5,16 @@
   <p>Epiquote recense les citations en tout genre des enseignants et des élèves
   de l'EPITA. Un professeur devient fou ? Une conversation sur IRC doit rester
   gravée à jamais ? N'hésitez pas à soumettre une citation !</p>
-  <p><em>Suite à la demande de l'administration, poster une citation nécessite
+  <p class="text-gray-600 mb-8 italic text-sm">Suite à la demande de l'administration, poster une citation nécessite
   d'être identifié et toute citation est soumise aux modérateurs avant d'être
-  publiée.</a></em></p>
-  <div class="row">
-    <div class="col-md-6">
-      <h2>Dernières</h2>
+  publiée.</p>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+      <h2 class="text-2xl font-bold mb-4">Dernières</h2>
       {% include "list.html" with quotes=last %}
     </div>
-    <div class="col-md-6">
-      <h2>Meilleures</h2>
+    <div>
+      <h2 class="text-2xl font-bold mb-4">Meilleures</h2>
       {% include "list.html" with quotes=top %}
     </div>
   </div>

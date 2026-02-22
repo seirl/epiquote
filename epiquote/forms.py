@@ -1,6 +1,6 @@
 import re
 from django.contrib.auth import get_user_model
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, validate_email
 from django_registration.forms import RegistrationFormCaseInsensitive
 
 User = get_user_model()
@@ -42,9 +42,10 @@ class UserRegistrationForm(RegistrationFormCaseInsensitive):
 
     def clean_username(self):
         super().clean_username()
-        username = self.data["username"].lower()
+        username = self.cleaned_data["username"].lower()
         self.instance.email = epita_login_to_email(username)
         # Run email validators on the generated email
+        validate_email(self.instance.email)
         for validator in self.email_validators_backup:
             validator(self.instance.email)
         return username

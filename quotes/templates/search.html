@@ -1,7 +1,7 @@
-<form class="navbar-form navbar-right" method="GET"
+<form class="flex items-center gap-2" method="GET"
       action="{% url 'search_quotes' %}" role="search">
   <div class="form-group">
-    <input type="text" class="form-control" name="q" />
+    <input type="text" class="border border-gray-300 rounded px-2 py-1" name="q" />
   </div>
-  <input type="submit" class="btn" value="Rechercher" />
+  <input type="submit" class="bg-gray-200 hover:bg-gray-300 px-4 py-1 rounded cursor-pointer" value="Rechercher" />
 </form>

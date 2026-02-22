@@ -1,15 +1,17 @@
 {% extends "base.html" %}
-{% load bootstrap %}
+{% load crispy_forms_tags %}
 
 {% block title %}Inscription{% endblock %}
 {% block content %}
-    <p>La création d'un compte vous permettra d'ajouter des citations, de
+    <p class="mb-4 text-gray-600">La création d'un compte vous permettra d'ajouter des citations, de
     voter pour vos citations favorites et bien plus encore !</p>
-    <form method="POST" class="form-horizontal" action="">
-      <div class="col-md-6">
-        {% csrf_token %}
-        {{ form|bootstrap }}
-        <input type="submit" class="btn" value="S'enregistrer" />
-      </div>
-    </form>
+    <div class="max-w-xl bg-white p-6 rounded shadow">
+      <form method="POST" action="">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="mt-4">
+            <input type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-bold cursor-pointer" value="S'enregistrer" />
+          </div>
+      </form>
+    </div>
 {% endblock %}

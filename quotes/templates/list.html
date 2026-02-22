@@ -1,51 +1,51 @@
 {% load comments vote %}
 
-<table class="table-striped" style="width: 100%">
+<div class="space-y-4">
   {% for quote in quotes %}
-    <tr>
-      <td style="{% if not quote.visible %}background-color:
-          #F2DEDE{% endif %}">
-        <blockquote>
-          <p><small style="font-size: 0.9em;">
+    <div class="p-4 rounded-lg {% if not quote.visible %}bg-red-100{% else %}bg-white border border-gray-200 shadow-sm{% endif %}">
+        <blockquote class="border-l-4 border-gray-300 pl-4 py-2 mb-2">
+          <p class="text-sm text-gray-600 mb-2">
             <strong>{{ quote.author }}</strong>
-            {% if quote.context %}(<em>{{ quote.context }}</em>){% endif %}
-          </small></p>
-          {{ quote.content|linebreaks }}
+            {% if quote.context %}<span class="italic">({{ quote.context }})</span>{% endif %}
+          </p>
+          <div class="text-lg">
+            {{ quote.content|linebreaks }}
+          </div>
         </blockquote>
-        <p style="margin-left: 20px;">
-        <small>
-          <a href="{% url 'show_quote' quote.id %}">#{{ quote.id }}</a> −
+        <div class="flex justify-between items-center text-sm text-gray-500 ml-4">
+          <div>
+            <a href="{% url 'show_quote' quote.id %}" class="hover:underline">#{{ quote.id }}</a> −
 
-          Score :
-          <span id="s{{ quote.id }}">
-            {{ quote.score }}</span>
-          (<span id="t{{ quote.id }}">{{ quote.num_votes }}
-          </span>
-          vote{{ quote.num_votes|pluralize }})
-          {% if user.is_authenticated %}
-            {% vote_for user quote as vote %} −
-              <a href="#" id="dp{{ quote.id }}"
-                 class="{% if vote == 1 %}voteon{% endif %}"
-                 onclick="vote('{{ quote.id }}', 'up'); return false;">(+)</a>
-              <a href="#" id="dm{{ quote.id }}"
-                 class="{% if vote == -1 %}voteon{% endif %}"
-                 onclick="vote('{{ quote.id }}', 'down'); return false;">(-)</a>
-          {% endif %}
-
-          <span style="margin-right: 20px;" class="pull-right">
-            <a href="#" onclick="rimshot(); return false;">♫</a> −
+            Score :
+            <span id="s{{ quote.id }}" class="font-bold">
+              {{ quote.score }}</span>
+            (<span id="t{{ quote.id }}">{{ quote.num_votes }}
+            </span>
+            vote{{ quote.num_votes|pluralize }})
             {% if user.is_authenticated %}
-              <a onclick="fav('{{ quote.id }}'); return false;" id="f{{ quote.id }}"
-                href="#">{% if request.user in quote.fans.all %}&lt;/3{% else %}&lt;3{% endif %}</a>
-              −
+              {% vote_for user quote as vote %} −
+                <a href="#" id="dp{{ quote.id }}"
+                   class="{% if vote == 1 %}text-blue-600 font-bold{% else %}text-gray-400 hover:text-blue-600{% endif %}"
+                   onclick="vote('{{ quote.id }}', 'up'); return false;">(+)</a>
+                <a href="#" id="dm{{ quote.id }}"
+                   class="{% if vote == -1 %}text-red-600 font-bold{% else %}text-gray-400 hover:text-red-600{% endif %}"
+                   onclick="vote('{{ quote.id }}', 'down'); return false;">(-)</a>
             {% endif %}
+          </div>
+
+          <div class="flex gap-4">
+            <a href="#" onclick="rimshot(); return false;" class="hover:text-black">♫</a>
+            {% if user.is_authenticated %}
+              <span>−</span>
+              <a onclick="fav('{{ quote.id }}'); return false;" id="f{{ quote.id }}"
+                href="#" class="hover:text-red-600">{% if request.user in quote.fans.all %}&lt;/3{% else %}&lt;3{% endif %}</a>
+            {% endif %}
+            <span>−</span>
             {% get_comment_count for quote as comment_count %}
-            <a href="{% url 'show_quote' quote.id %}#c">{{ comment_count }}
+            <a href="{% url 'show_quote' quote.id %}#c" class="hover:underline">{{ comment_count }}
                 commentaire{{ comment_count|pluralize }}</a>
-          </span>
-        </small>
-        </p>
-      </td>
-    </tr>
+          </div>
+        </div>
+    </div>
   {% endfor %}
-</table>
+</div>
