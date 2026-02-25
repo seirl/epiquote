@@ -87,7 +87,7 @@ class SearchQuotes(QuoteListView):
         if not f.is_valid():
             return Quote.objects.none()
         q = f.cleaned_data['q']
-        return [r'\m{0}\M'.format(re.escape(s)) for s in self.quotes_split(q)]
+        return [r'\b{0}\b'.format(re.escape(s)) for s in self.quotes_split(q)]
 
     def get_queryset(self):
         terms = self.get_search_terms()
