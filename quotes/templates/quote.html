@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 {% load comments %}
-{% load bootstrap %}
 
 {% block title %}Citation #{{ quote.id }}{% endblock %}
 {% block content %}
   {% include "list.html" %}
   {% get_comment_list for quote as comment_list %}
   <div class="row" style="margin-top: 30px;">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-10 offset-md-1">
       <h3 id="c">Commentaires</h3>
       <table class="table table-bordered">
         {% for comment in comment_list %}
@@ -21,13 +20,12 @@
       </table>
       {% if user.is_authenticated %}
         {% get_comment_form for quote as form %}
-        <form action="{% comment_form_target %}"
-          class="form-horizontal" method="POST">
+        <form action="{% comment_form_target %}" method="POST">
           {% csrf_token %}
-          <div class="form-group required">
-            <label label-default class="col-lg-2 col-md-2 col-sm-3 col-xs-12 control-label" for="id_comment">Commentaire</label>
-            <div class="col-lg-10 col-md-10 col-sm-9 col-xs-12">
-              <textarea id="id_comment" rows="6" cols="40" style="width:60%"
+          <div class="row mb-3 required">
+            <label class="col-lg-2 col-md-2 col-sm-3 col-12 col-form-label" for="id_comment">Commentaire</label>
+            <div class="col-lg-10 col-md-10 col-sm-9 col-12">
+              <textarea id="id_comment" rows="6" cols="40" class="form-control" style="width:60%"
                 name="comment"></textarea>
             </div>
           </div>
@@ -37,8 +35,8 @@
           {{ form.timestamp }}
           {{ form.security_hash }}
           <input type="hidden" name="next" value="/{{ quote.id }}#c" />
-          <div class="col-sm-2 col-sm-offset-2">
-            <input type="submit" class="btn" value="Ajouter un commentaire"
+          <div class="col-sm-2 offset-sm-2">
+            <input type="submit" class="btn btn-primary" value="Ajouter un commentaire"
             id="id_submit" />
           </div>
         </form>

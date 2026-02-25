@@ -1,46 +1,45 @@
 {% load navigation %}
 
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
   <div class="container">
     <a class="navbar-brand" href="/">Epiquote</a>
-    <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-        <li class="{% active '^/random' %}">
-          <a href="{% url 'random_quotes' %}">Au hasard</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar">
+      <ul class="navbar-nav gap-2 me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link {% active '^/random' %}" href="{% url 'random_quotes' %}">Au hasard</a>
         </li>
-        <li class="{% active '^/last' %}">
-          <a href="{% url 'last_quotes' %}">Dernières</a>
+        <li class="nav-item">
+          <a class="nav-link {% active '^/last' %}" href="{% url 'last_quotes' %}">Dernières</a>
         </li>
-        <li class="{% active '^/top' %}">
-          <a href="{% url 'top_quotes' %}">Meilleures</a>
+        <li class="nav-item">
+          <a class="nav-link {% active '^/top' %}" href="{% url 'top_quotes' %}">Meilleures</a>
         </li>
-        <li class="{% active '^/add' %}">
-          <a href="{% url 'add_quote' %}">Ajouter</a>
+        <li class="nav-item">
+          <a class="nav-link {% active '^/add' %}" href="{% url 'add_quote' %}">Ajouter</a>
         </li>
         {% if user.is_authenticated %}
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             {{ request.user.username }}
-            <b class="caret"></b>
           </a>
-          <ul class="dropdown-menu" role="menu"
-                                    aria-labelledby="dLabel">
-            <li><a tabindex="-1"
-                   href="{% url 'favorite_quotes' request.user.username %}">
+          <ul class="dropdown-menu" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="{% url 'favorite_quotes' request.user.username %}">
                 Favoris</a></li>
-            <li><a tabindex="-1"
-                   href="{% url 'password_change' %}">
+            <li><a class="dropdown-item" href="{% url 'password_change' %}">
                 Changer de mot de passe</a></li>
-            <li class="divider"></li>
-            <li><a tabindex="-1" href="{% url 'logout' %}">Déconnexion</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}">Déconnexion</a></li>
           </ul>
         </li>
         {% else %}
-        <li class="{% active '^/accounts/login' %}">
-          <a href="{% url 'login' %}">Connexion</a>
+        <li class="nav-item">
+          <a class="nav-link {% active '^/accounts/login' %}" href="{% url 'login' %}">Connexion</a>
         </li>
-        <li class="{% active '^/accounts/register' %}">
-          <a href="{% url 'register' %}">Inscription</a>
+        <li class="nav-item">
+          <a class="nav-link {% active '^/accounts/register' %}" href="{% url 'register' %}">Inscription</a>
         </li>
         {% endif %}
       </ul>

@@ -12,12 +12,19 @@ function vote(slug, direction) {
 
       var dp = $("#dp" + slug);
       var dm = $("#dm" + slug);
-      dp.removeClass("voteon");
-      dm.removeClass("voteon");
-      if (data.current_vote == +1)
-        dp.addClass("voteon");
-      if (data.current_vote == -1)
-        dm.addClass("voteon");
+
+      // Reset classes
+      dp.removeClass("fw-bold text-success text-secondary");
+      dm.removeClass("fw-bold text-danger text-secondary");
+      dp.addClass("text-secondary");
+      dm.addClass("text-secondary");
+
+      if (data.current_vote == +1) {
+        dp.removeClass("text-secondary").addClass("fw-bold text-success");
+      }
+      if (data.current_vote == -1) {
+        dm.removeClass("text-secondary").addClass("fw-bold text-danger");
+      }
     });
 }
 
