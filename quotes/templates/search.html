@@ -1,7 +1,4 @@
-<form class="navbar-form navbar-right" method="GET"
-      action="{% url 'search_quotes' %}" role="search">
-  <div class="form-group">
-    <input type="text" class="form-control" name="q" />
-  </div>
-  <input type="submit" class="btn" value="Rechercher" />
+<form class="d-flex" method="GET" action="{% url 'search_quotes' %}" role="search">
+  <input class="form-control me-2" type="search" name="q" placeholder="Rechercher" aria-label="Rechercher">
+  <button class="btn btn-outline-success" type="submit">Rechercher</button>
 </form>

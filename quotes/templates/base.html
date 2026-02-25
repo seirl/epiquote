@@ -5,14 +5,14 @@
     <title>{% if name_page %}{{ name_page }} - {% endif %}Epiquote</title>
     {% include "head.html" %}
   </head>
-  <body>
+  <body class="d-flex flex-column min-vh-100">
     {% include "start_body.html" %}
     {% include "menu.html" %}
-    <div class="container">
+    <div class="container flex-grow-1">
       {% include "messages.html" %}
-      <h1>{% block title %}{% endblock %}</h1>
+      <h1 class="fs-3 my-4">{% block title %}{% endblock %}</h1>
       {% block content %}{% endblock %}
     </div>
-        {% include "footer.html" %}
+    {% include "footer.html" %}
   </body>
 </html>

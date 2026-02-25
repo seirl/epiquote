@@ -39,6 +39,19 @@ wheels = [
 ]
 
 [[package]]
+name = "crispy-bootstrap5"
+version = "2025.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "django-crispy-forms" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/97/30/36cc4144b6dff91bb54490a3b474897b7469bcda9517bf9f54681ea91011/crispy_bootstrap5-2025.6.tar.gz", hash = "sha256:f1bde7cac074c650fc82f31777d4a4cfd0df2512c68bc4128f259c75d3daada4", size = 23950, upload-time = "2025-06-08T07:43:35.461Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d8/d4/8cf1ba773a91fc17bab1fd46b75bbdef780c4cccbbb8230e617980a0362c/crispy_bootstrap5-2025.6-py3-none-any.whl", hash = "sha256:a343aa128b4383f35f00295b94de2b10862f2a4f24eda21fa6ead45234c07050", size = 24794, upload-time = "2025-06-08T07:43:34.206Z" },
+]
+
+[[package]]
 name = "decorator"
 version = "5.2.1"
 source = { registry = "https://pypi.org/simple" }
@@ -75,15 +88,6 @@ wheels = [
 ]
 
 [[package]]
-name = "django-bootstrap-form"
-version = "3.4"
-source = { git = "https://github.com/seirl/django-bootstrap-form#9aa3b6c0344e415ab6663a6acba92c22f23765c6" }
-dependencies = [
-    { name = "django" },
-    { name = "packaging" },
-]
-
-[[package]]
 name = "django-contrib-comments"
 version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -93,6 +97,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/34/93/eeca36fa4e380542ea8506c099da803b9439fc3c2c256924796898cfe17e/django-contrib-comments-2.2.0.tar.gz", hash = "sha256:48de00f15677e016a216aeff205d6e00e4391c9a5702136c64119c472b7356da", size = 870169, upload-time = "2022-01-31T19:40:27.913Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/79/b4/edf27735bf586e20ef87e1c8e931d01aa5caeedfe3447bb6d77e30d09c67/django_contrib_comments-2.2.0-py3-none-any.whl", hash = "sha256:2ca79060bbc8fc5b636981ef6e50f35ab83649af75fc1be47bf770636be3271c", size = 416426, upload-time = "2022-01-31T19:40:24.866Z" },
+]
+
+[[package]]
+name = "django-crispy-forms"
+version = "2.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/79/a1/6a638d13717e4d4f8df169dade0fa51bdc65d9825df39d98ce709a776b49/django_crispy_forms-2.5.tar.gz", hash = "sha256:066e72a8f152a1334f1c811cc37740868efe3265e5a218f79079ef89f848c3d8", size = 1097999, upload-time = "2025-11-06T20:44:01.921Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2c/58/ac3a11950baaf75c1f3242e3af9dfe45201f6ee10c113dd37a9c000876d2/django_crispy_forms-2.5-py3-none-any.whl", hash = "sha256:adc99d5901baca09479c53bf536b3909e80a9f2bb299438a223de4c106ebf1f9", size = 31464, upload-time = "2025-11-06T20:44:00.795Z" },
 ]
 
 [[package]]
@@ -111,12 +127,13 @@ wheels = [
 [[package]]
 name = "epiquote"
 version = "0.0.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
+    { name = "crispy-bootstrap5" },
     { name = "dj-database-url" },
     { name = "django" },
-    { name = "django-bootstrap-form" },
     { name = "django-contrib-comments" },
+    { name = "django-crispy-forms" },
     { name = "django-registration" },
     { name = "psycopg2-binary" },
 ]
@@ -129,10 +146,11 @@ prod = [
 
 [package.metadata]
 requires-dist = [
+    { name = "crispy-bootstrap5", specifier = ">=2.0" },
     { name = "dj-database-url", specifier = ">=2.0.0,<3.0.0" },
     { name = "django", specifier = ">=4.2.28,<5.0.0" },
-    { name = "django-bootstrap-form", git = "https://github.com/seirl/django-bootstrap-form" },
     { name = "django-contrib-comments", specifier = ">=2.2.0,<3.0.0" },
+    { name = "django-crispy-forms", specifier = ">=2.0" },
     { name = "django-registration", specifier = ">=3.3,<4.0.0" },
     { name = "gunicorn", marker = "extra == 'prod'", specifier = ">=23.0.0,<24.0.0" },
     { name = "ipython", marker = "extra == 'prod'", specifier = ">=9.6.0,<10.0.0" },

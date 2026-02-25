@@ -158,10 +158,14 @@ INSTALLED_APPS = (
     # Vendor
     'django_comments',
     'django_registration',
-    'bootstrapform',
+    'crispy_forms',
+    'crispy_bootstrap5',
     # Epiquote
     'quotes',
 )
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
