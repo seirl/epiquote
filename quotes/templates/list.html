@@ -2,10 +2,10 @@
 
 <div class="quotes-list">
   {% for quote in quotes %}
-    <div class="card border-0 rounded-3 p-3 mb-4 {% if not quote.visible %}bg-danger-subtle{% else %}bg-light{% endif %}">
+    <div class="card border-0 rounded-3 p-3 mb-4 {% if not quote.visible %}bg-danger-subtle{% else %}bg-body-tertiary{% endif %}">
       <div class="card-body p-0">
         <div class="mb-2">
-          <strong class="fw-bold text-black-50">— {{ quote.author }}</strong>
+          <strong class="fw-bold text-body-secondary">— {{ quote.author }}</strong>
           {% if quote.context %}
             <span class="fst-italic text-secondary">({{ quote.context }})</span>
           {% endif %}
