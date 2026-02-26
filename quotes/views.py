@@ -126,11 +126,10 @@ class AjaxFavouriteView(LoginRequiredMixin, View):
             Quote.objects.seen_by(self.request.user),
             id=int(self.kwargs['quote_id']),
         )
-        if self.request.user in quote.fans.all():
+        if quote.fans.filter(pk=self.request.user.pk).exists():
             quote.fans.remove(self.request.user)
         else:
             quote.fans.add(self.request.user)
-        quote.save()
         return HttpResponse('')
 
 
