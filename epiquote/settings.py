@@ -207,7 +207,6 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 LOGIN_REDIRECT_URL = '/'
 LOGIN_ERROR_URL = '/accounts/login'
 DATABASE_ENGINE = 'sqlite3'
-AUTH_PROFILE_MODULE = 'quotes.UserProfile'
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
