@@ -1,6 +1,6 @@
 {% load navigation %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
   <div class="container">
     <a class="navbar-brand" href="/">Epiquote</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,11 @@
           <a class="nav-link {% active '^/accounts/register' %}" href="{% url 'register' %}">Inscription</a>
         </li>
         {% endif %}
+        <li>
+          <button class="btn nav-link ms-2" onclick="toggleTheme(); return false;" title="Basculer le thème">
+            &#9728;
+          </button>
+        </li>
       </ul>
       {% include "search.html" %}
     </div>
