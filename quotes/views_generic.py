@@ -13,14 +13,7 @@ class QuoteViewMixin:
             user = None
         qs = Quote.objects.seen_by(user).prefetch_related('fans')
         if self.order is not None:
-            if self.order == '?':
-                # Horrible workaround for this django bug:
-                # https://code.djangoproject.com/ticket/26390
-                sql, params = qs.query.sql_with_params()
-                sql += ' ORDER BY RANDOM()'
-                qs = Quote.objects.raw(sql, params)
-            else:
-                qs = qs.order_by(self.order)
+            qs = qs.order_by(self.order)
         if self.limit is not None:
             qs = qs[: self.limit]
         return qs
