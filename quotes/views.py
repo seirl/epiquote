@@ -154,7 +154,13 @@ class AjaxVoteView(LoginRequiredMixin, View):
         except QuoteVote.DoesNotExist:
             qv = QuoteVote(user=self.request.user, quote=quote, vote=vote)
             qv.save()
-        quote = Quote.objects.get(id=self.kwargs['quote_id'])
+        updated_data = (
+            Quote.objects.filter(id=self.kwargs['quote_id'])
+            .values('score', 'num_votes')
+            .get()
+        )
+        quote.score = updated_data['score']
+        quote.num_votes = updated_data['num_votes']
         return JsonResponse(
             {
                 'score': quote.score,
