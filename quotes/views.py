@@ -67,9 +67,11 @@ class HomeQuotes(QuoteListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['top'] = Quote.objects.seen_by(self.request.user).order_by(
-            '-score'
-        )[: settings.QUOTES_MAX_PAGE_HOME]
+        context['top'] = (
+            Quote.objects.seen_by(self.request.user)
+            .prefetch_related('fans')
+            .order_by('-score')[: settings.QUOTES_MAX_PAGE_HOME]
+        )
         return context
 
 
