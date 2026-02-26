@@ -11,7 +11,7 @@ class QuoteViewMixin:
             user = self.request.user
         else:
             user = None
-        qs = Quote.objects.seen_by(user)
+        qs = Quote.objects.seen_by(user).prefetch_related('fans')
         if self.order is not None:
             if self.order == '?':
                 # Horrible workaround for this django bug:
