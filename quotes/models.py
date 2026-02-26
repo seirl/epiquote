@@ -20,7 +20,9 @@ class QuoteManager(models.Manager):
         )
 
     def seen_by(self, user=None):
-        quotes = self.get_queryset().filter(accepted=True)
+        quotes = (
+            self.get_queryset().filter(accepted=True).prefetch_related('fans')
+        )
         if user is None or not user.is_staff:
             quotes = quotes.filter(visible=True)
         return quotes
