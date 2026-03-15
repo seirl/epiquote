@@ -5,3 +5,4 @@
 *.log
 epiquote/settings/*.py
 .venv/
+venv/
