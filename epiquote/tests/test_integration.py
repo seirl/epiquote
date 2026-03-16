@@ -29,12 +29,15 @@ class IntegrationTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
 
-        match = re.search(r'(http://[^\s]+/activate/[a-zA-Z0-9:\-_]+)', email.body)
+        match = re.search(r'(http://[^\s]+/activate/\?activation_key=[a-zA-Z0-9:\-_]+)', email.body)
         self.assertTrue(match, f"Activation link not found in email body: {email.body}")
         activation_link = match.group(1)
 
+        # Activation in django-registration 5 requires a POST request
+        activation_url = '/accounts/activate/'
+
         # Follow redirect to final success page
-        response = self.client.get(activation_link, follow=True)
+        response = self.client.post(activation_url, {'activation_key': match.group(1).split('=')[1]}, follow=True)
         self.assertEqual(response.status_code, 200)
 
         try:

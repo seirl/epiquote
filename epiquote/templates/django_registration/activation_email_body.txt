@@ -6,7 +6,7 @@ plus encore !
 Merci de cliquer sur ce lien d'activation pour finaliser la création de votre
 compte :
 
-http://{{ site.domain }}/accounts/activate/{{ activation_key }}
+http://{{ site.domain }}/accounts/activate/?activation_key={{ activation_key }}
 
 Vous avez {{ expiration_days }} jour{{ expiration_days|pluralize }} pour
 activer votre compte, après quoi vous devrez vous réenregistrer.

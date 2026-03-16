@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Activation{% endblock %}
+{% block content %}
+<div class="card border-0 bg-light rounded-3 mt-4">
+  <div class="card-body p-4">
+    <h3 class="card-title text-secondary fs-4 border-bottom pb-2 mb-4">Activation du compte</h3>
+
+    {% if form.errors %}
+      <div class="alert alert-danger">
+        <p>La clé d'activation n'est pas ou plus valide. Essayez de vous réenregistrer !</p>
+      </div>
+    {% else %}
+      <p>Cliquez sur le bouton ci-dessous pour activer votre compte :</p>
+      <form method="post" action="">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary mt-3">Activer mon compte</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

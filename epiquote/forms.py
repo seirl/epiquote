@@ -1,7 +1,7 @@
 import re
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator, EmailValidator
-from django_registration.forms import RegistrationFormCaseInsensitive
+from django_registration.forms import RegistrationForm
 
 User = get_user_model()
 
@@ -22,7 +22,7 @@ def email_to_username_validator(email_validator):
     return lambda username: email_validator(epita_login_to_email(username))
 
 
-class UserRegistrationForm(RegistrationFormCaseInsensitive):
+class UserRegistrationForm(RegistrationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -41,8 +41,11 @@ class UserRegistrationForm(RegistrationFormCaseInsensitive):
         del self.fields[email_field]
 
     def clean_username(self):
-        super().clean_username()
-        username = self.data["username"].lower()
+        # Call the parent clean_username (if it exists) to get default validations
+        username = self.cleaned_data.get("username", "").lower()
+        if hasattr(super(), 'clean_username'):
+            username = super().clean_username().lower()
+
         self.instance.email = epita_login_to_email(username)
         # Run email validators on the generated email
         EmailValidator()(self.instance.email)
