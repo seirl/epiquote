@@ -113,15 +113,15 @@ wheels = [
 
 [[package]]
 name = "django-registration"
-version = "3.4"
+version = "5.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "confusable-homoglyphs" },
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/71/00/ee3e5e08cb16475836f9ad117631f598f62a4e32a37c01ab4cb0859454ea/django-registration-3.4.tar.gz", hash = "sha256:1a0ccef7ef71e67a78a551abd8ad378977dc14a036f1fcd8be422a68bd5254a9", size = 89040, upload-time = "2023-07-04T01:25:38.448Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9a/a0/f6e6d0a59b94eb4ab14983853334cb25401d677c5a3799aaca6819acf2eb/django_registration-5.2.1.tar.gz", hash = "sha256:06864f9da0bc4d7b073fb2da98d95d12428357ab0bc46e33f79c26707ec06bbe", size = 94187, upload-time = "2025-04-07T05:54:48.558Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/06/3a/455455a208cd38c7fececec136e0de4a848004a7dafe4d62e55566dcbbfe/django_registration-3.4-py3-none-any.whl", hash = "sha256:fa76df481189794f47eb73043ee5cc9bfb0963194b901d7bd8cf914beab1ddd0", size = 96588, upload-time = "2023-07-04T01:25:36.714Z" },
+    { url = "https://files.pythonhosted.org/packages/78/5d/aa2f82b3c809db66eb986963db1d4b89de190b4eac2e3021a725112e3b13/django_registration-5.2.1-py3-none-any.whl", hash = "sha256:7079e2364b15fc6bef18b81ae94c5e947b556abdbbfb19c9bcca14feafde6a3d", size = 105277, upload-time = "2025-04-07T05:54:46.981Z" },
 ]
 
 [[package]]
@@ -151,7 +151,7 @@ requires-dist = [
     { name = "django", specifier = ">=4.2.28,<5.0.0" },
     { name = "django-contrib-comments", specifier = ">=2.2.0,<3.0.0" },
     { name = "django-crispy-forms", specifier = ">=2.0" },
-    { name = "django-registration", specifier = ">=3.3,<4.0.0" },
+    { name = "django-registration", specifier = ">=5.2.1,<6.0.0" },
     { name = "gunicorn", marker = "extra == 'prod'", specifier = ">=23.0.0,<24.0.0" },
     { name = "ipython", marker = "extra == 'prod'", specifier = ">=9.6.0,<10.0.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.6,<3.0.0" },
