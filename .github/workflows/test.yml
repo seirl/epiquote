@@ -25,7 +25,5 @@ jobs:
           pip install -e .
 
       - name: Run tests
-        env:
-          SECRET_KEY: dummy_secret_key_for_testing
         run: |
           python manage.py test
