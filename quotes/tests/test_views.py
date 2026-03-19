@@ -119,6 +119,30 @@ class QuoteViewsTest(TestCase):
             ).exists()
         )
 
+        # Change vote to down
+        url_down = reverse(
+            'ajax_vote_quote',
+            kwargs={'quote_id': self.quote.id, 'direction': 'down'},
+        )
+        response = self.client.post(url_down)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['current_vote'], -1)
+        self.assertTrue(
+            QuoteVote.objects.filter(
+                user=self.user, quote=self.quote, vote=-1
+            ).exists()
+        )
+
+        # Change vote back to up to continue with toggle test
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['current_vote'], 1)
+        self.assertTrue(
+            QuoteVote.objects.filter(
+                user=self.user, quote=self.quote, vote=1
+            ).exists()
+        )
+
         # Toggle vote (click up again -> remove vote)
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
