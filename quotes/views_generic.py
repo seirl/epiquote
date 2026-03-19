@@ -1,4 +1,5 @@
-from quotes.models import Quote
+from django.db.models import Prefetch
+from quotes.models import Quote, QuoteVote
 from django.views.generic import ListView, DetailView
 
 
@@ -12,6 +13,14 @@ class QuoteViewMixin:
         else:
             user = None
         qs = Quote.objects.seen_by(user).prefetch_related('fans')
+        if user and user.is_authenticated:
+            qs = qs.prefetch_related(
+                Prefetch(
+                    'votes',
+                    queryset=QuoteVote.objects.filter(user=user),
+                    to_attr='user_vote_list'
+                )
+            )
         if self.order is not None:
             qs = qs.order_by(self.order)
         if self.limit is not None:
