@@ -8,32 +8,53 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-def load_config(parser, path):
-    if path.endswith('.toml'):
-        try:
-            with open(path, 'rb') as f:
-                data = tomllib.load(f)
-                stringified = {}
-                for section, options in data.items():
-                    stringified[section] = {}
-                    for k, v in options.items():
-                        if isinstance(v, list):
-                            stringified[section][k] = ",".join(str(item) for item in v)
-                        elif isinstance(v, bool):
-                            stringified[section][k] = "true" if v else "false"
-                        else:
-                            stringified[section][k] = str(v)
-                parser.read_dict(stringified)
-        except FileNotFoundError:
-            pass
-    else:
-        parser.read(path)
+class Config:
+    def __init__(self):
+        self.data = {}
 
-config = configparser.ConfigParser()
+    def load(self, path):
+        if path.endswith('.toml'):
+            try:
+                with open(path, 'rb') as f:
+                    toml_data = tomllib.load(f)
+                    for section, options in toml_data.items():
+                        if section not in self.data:
+                            self.data[section] = {}
+                        self.data[section].update(options)
+            except FileNotFoundError:
+                pass
+        else:
+            parser = configparser.ConfigParser()
+            parser.read(path)
+            for section in parser.sections():
+                if section not in self.data:
+                    self.data[section] = {}
+                for key, value in parser.items(section):
+                    self.data[section][key] = value
+
+    def get(self, section, option, fallback=None, raw=False):
+        if section in self.data and option in self.data[section]:
+            val = self.data[section][option]
+            if isinstance(val, list):
+                return ",".join(str(v) for v in val)
+            return str(val) if not isinstance(val, str) else val
+        return fallback
+
+    def getboolean(self, section, option, fallback=None):
+        if section in self.data and option in self.data[section]:
+            val = self.data[section][option]
+            if isinstance(val, bool):
+                return val
+            if isinstance(val, str):
+                return val.lower() in ('true', '1', 'yes', 'on', 't', 'y')
+            return bool(val)
+        return fallback
+
+config = Config()
 if config_path := os.getenv('EPIQUOTE_SETTINGS_PATH'):
-    load_config(config, config_path)
+    config.load(config_path)
 if creds_path := os.getenv('EPIQUOTE_CREDS_PATH'):
-    load_config(config, creds_path)
+    config.load(creds_path)
 
 DEBUG = not config.getboolean('epiquote', 'prod', fallback=False)
 
