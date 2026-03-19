@@ -2,16 +2,38 @@ import configparser
 import dj_database_url
 import email.utils
 import os
+import tomllib
 from django.contrib.messages import constants as messages
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+def load_config(parser, path):
+    if path.endswith('.toml'):
+        try:
+            with open(path, 'rb') as f:
+                data = tomllib.load(f)
+                stringified = {}
+                for section, options in data.items():
+                    stringified[section] = {}
+                    for k, v in options.items():
+                        if isinstance(v, list):
+                            stringified[section][k] = ",".join(str(item) for item in v)
+                        elif isinstance(v, bool):
+                            stringified[section][k] = "true" if v else "false"
+                        else:
+                            stringified[section][k] = str(v)
+                parser.read_dict(stringified)
+        except FileNotFoundError:
+            pass
+    else:
+        parser.read(path)
+
 config = configparser.ConfigParser()
 if config_path := os.getenv('EPIQUOTE_SETTINGS_PATH'):
-    config.read(config_path)
+    load_config(config, config_path)
 if creds_path := os.getenv('EPIQUOTE_CREDS_PATH'):
-    config.read(creds_path)
+    load_config(config, creds_path)
 
 DEBUG = not config.getboolean('epiquote', 'prod', fallback=False)
 
