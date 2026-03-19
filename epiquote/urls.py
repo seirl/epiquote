@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.http import HttpResponse
 from django.urls import include, path
 from django_registration.backends.activation.views import RegistrationView
@@ -21,6 +22,15 @@ urlpatterns = [
         name='register',
     ),
     path('accounts/', include('django_registration.backends.activation.urls')),
+    path(
+        'accounts/login/',
+        auth_views.LoginView.as_view(
+            extra_context={
+                'ENABLE_EPITA_CONNECT': settings.ENABLE_EPITA_CONNECT
+            }
+        ),
+        name='login',
+    ),
     path('accounts/', include('django.contrib.auth.urls')),
     path('comments/', include('django_comments.urls')),
     path('crashtest', crash_test),
