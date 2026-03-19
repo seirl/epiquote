@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.syndication.views import Feed
+from django.core.cache import cache
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -67,11 +68,20 @@ class HomeQuotes(QuoteListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['top'] = (
-            Quote.objects.seen_by(self.request.user)
-            .prefetch_related('fans')
-            .order_by('-score')[: settings.QUOTES_MAX_PAGE_HOME]
-        )
+        user = self.request.user
+        is_staff = getattr(user, 'is_staff', False)
+        cache_key = f'home_top_quotes_{is_staff}'
+        top_quotes = cache.get(cache_key)
+
+        if top_quotes is None:
+            top_quotes = list(
+                Quote.objects.seen_by(user)
+                .prefetch_related('fans')
+                .order_by('-score')[: settings.QUOTES_MAX_PAGE_HOME]
+            )
+            cache.set(cache_key, top_quotes, 60 * 60)  # cache for 1 hour
+
+        context['top'] = top_quotes
         return context
 
 
