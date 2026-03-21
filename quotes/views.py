@@ -68,14 +68,12 @@ class HomeQuotes(QuoteListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        user = self.request.user
-        is_staff = getattr(user, 'is_staff', False)
-        cache_key = f'home_top_quotes_{is_staff}'
+        cache_key = 'home_top_quotes'
         top_quotes = cache.get(cache_key)
 
         if top_quotes is None:
             top_quotes = list(
-                Quote.objects.seen_by(user)
+                Quote.objects.seen_by()
                 .prefetch_related('fans')
                 .order_by('-score')[: settings.QUOTES_MAX_PAGE_HOME]
             )
