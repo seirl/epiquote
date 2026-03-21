@@ -19,7 +19,7 @@ dependencies = [
     "django-contrib-comments>=2.2.0,<3.0.0",
     "psycopg2-binary>=2.9.6,<3.0.0",
     "django-registration>=5.2.1,<6.0.0",
-    "dj-database-url>=2.0.0,<3.0.0",
+    "dj-database-url>=3.1.2,<4.0.0",
     # Waiting for Django 4 compat:
     # https://gitlab.cri.epita.fr/cri/packages/social-auth-backend-epita/-/merge_requests/5
     # "social-auth-backend-epita>=1.0.2,<2.0.0",
