@@ -1,4 +1,3 @@
-import configparser
 import dj_database_url
 import email.utils
 import os
@@ -13,24 +12,15 @@ class Config:
         self.data = {}
 
     def load(self, path):
-        if path.endswith('.toml'):
-            try:
-                with open(path, 'rb') as f:
-                    toml_data = tomllib.load(f)
-                    for section, options in toml_data.items():
-                        if section not in self.data:
-                            self.data[section] = {}
-                        self.data[section].update(options)
-            except FileNotFoundError:
-                pass
-        else:
-            parser = configparser.ConfigParser()
-            parser.read(path)
-            for section in parser.sections():
-                if section not in self.data:
-                    self.data[section] = {}
-                for key, value in parser.items(section):
-                    self.data[section][key] = value
+        try:
+            with open(path, 'rb') as f:
+                toml_data = tomllib.load(f)
+                for section, options in toml_data.items():
+                    if section not in self.data:
+                        self.data[section] = {}
+                    self.data[section].update(options)
+        except FileNotFoundError:
+            pass
 
     def get(self, section, option, fallback=None, raw=False):
         if section in self.data and option in self.data[section]:
