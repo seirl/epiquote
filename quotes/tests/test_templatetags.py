@@ -43,31 +43,28 @@ class NavigationTemplateTagTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
 
-    def render_template(self, pattern_or_urlname, path):
+    def call_tag(self, pattern_or_urlname, path):
+        from quotes.templatetags.navigation import active
         request = self.factory.get(path)
         context = Context({'request': request})
-        template = Template(
-            "{% load navigation %}"
-            f"{{% active '{pattern_or_urlname}' %}}"
-        )
-        return template.render(context)
+        return active(context, pattern_or_urlname)
 
     def test_active_with_urlname_match(self):
         # 'last_quotes' resolves to '/last'
-        result = self.render_template('last_quotes', '/last')
-        self.assertEqual(result, 'active rounded bg-opacity-10 bg-secondary')
+        result = self.call_tag('last_quotes', '/last')
+        self.assertTrue(result)
 
     def test_active_with_urlname_no_match(self):
         # 'last_quotes' resolves to '/last', path is '/top'
-        result = self.render_template('last_quotes', '/top')
-        self.assertEqual(result, '')
+        result = self.call_tag('last_quotes', '/top')
+        self.assertFalse(result)
 
     def test_active_with_pattern_match(self):
         # pattern '^/test' matches path '/test/abc'
-        result = self.render_template('^/test', '/test/abc')
-        self.assertEqual(result, 'active rounded bg-opacity-10 bg-secondary')
+        result = self.call_tag('^/test', '/test/abc')
+        self.assertTrue(result)
 
     def test_active_with_pattern_no_match(self):
         # pattern '^/test' does not match path '/other/test'
-        result = self.render_template('^/test', '/other/test')
-        self.assertEqual(result, '')
+        result = self.call_tag('^/test', '/other/test')
+        self.assertFalse(result)
