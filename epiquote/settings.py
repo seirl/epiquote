@@ -7,77 +7,55 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-class Config:
-    def __init__(self):
-        self.data = {}
+config = {}
 
-    def load(self, path):
-        try:
-            with open(path, 'rb') as f:
-                toml_data = tomllib.load(f)
-                for section, options in toml_data.items():
-                    if section not in self.data:
-                        self.data[section] = {}
-                    self.data[section].update(options)
-        except FileNotFoundError:
-            pass
+def load_config(path):
+    try:
+        with open(path, 'rb') as f:
+            toml_data = tomllib.load(f)
+            for section, options in toml_data.items():
+                if section not in config:
+                    config[section] = {}
+                config[section].update(options)
+    except FileNotFoundError:
+        pass
 
-    def get(self, section, option, fallback=None, raw=False):
-        if section in self.data and option in self.data[section]:
-            val = self.data[section][option]
-            if isinstance(val, list):
-                return ",".join(str(v) for v in val)
-            return str(val) if not isinstance(val, str) else val
-        return fallback
-
-    def getboolean(self, section, option, fallback=None):
-        if section in self.data and option in self.data[section]:
-            val = self.data[section][option]
-            if isinstance(val, bool):
-                return val
-            if isinstance(val, str):
-                return val.lower() in ('true', '1', 'yes', 'on', 't', 'y')
-            return bool(val)
-        return fallback
-
-config = Config()
 if config_path := os.getenv('EPIQUOTE_SETTINGS_PATH'):
-    config.load(config_path)
+    load_config(config_path)
 if creds_path := os.getenv('EPIQUOTE_CREDS_PATH'):
-    config.load(creds_path)
+    load_config(creds_path)
 
-DEBUG = not config.getboolean('epiquote', 'prod', fallback=False)
+epiquote_config = config.get('epiquote', {})
+
+DEBUG = not epiquote_config.get('prod', False)
 
 if DEBUG:
-    SECRET_KEY = config.get(
-        'epiquote', 'secret_key', raw=True, fallback='CHANGE_ME'
-    )
+    SECRET_KEY = epiquote_config.get('secret_key', 'CHANGE_ME')
 else:
-    SECRET_KEY = config.get('epiquote', 'secret_key', raw=True)
+    SECRET_KEY = epiquote_config.get('secret_key')
 
 ALLOWED_HOSTS = [
-    h.strip()
-    for h in config.get(
-        'epiquote', 'allowed_hosts', fallback='127.0.0.1,::1,localhost'
-    ).split(',')
+    h.strip() if isinstance(h, str) else h
+    for h in epiquote_config.get(
+        'allowed_hosts', ['127.0.0.1', '::1', 'localhost']
+    )
 ]
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=config.get(
-            'epiquote',
+        default=epiquote_config.get(
             'database_url',
-            fallback='sqlite:///epiquote.db',
+            'sqlite:///epiquote.db',
         )
     ),
 }
 
-if config.getboolean('epiquote', 'show_emails_on_console', fallback=False):
+if epiquote_config.get('show_emails_on_console', False):
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ADMINS = [
     email.utils.parseaddr(h.strip())
-    for h in config.get('epiquote', 'admins', fallback='').split(',')
+    for h in epiquote_config.get('admins', [])
 ]
 
 
@@ -95,8 +73,8 @@ LANGUAGE_CODE = 'fr-fr'
 
 SITE_ID = 1
 
-USE_X_FORWARDED_HOST = config.getboolean(
-    'epiquote', 'use_x_forwarded_host', fallback=False
+USE_X_FORWARDED_HOST = epiquote_config.get(
+    'use_x_forwarded_host', False
 )
 
 # If you set this to False, Django will make some optimizations so as not
@@ -123,7 +101,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = config.get('epiquote', 'static_root', fallback='')
+STATIC_ROOT = epiquote_config.get('static_root', '')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -254,15 +232,14 @@ QUOTES_MAX_PAGE = 50
 QUOTES_MAX_PAGE_HOME = 5
 
 # EPITA Connect
-ENABLE_EPITA_CONNECT = config.getboolean(
-    'epita_connect', 'enable', fallback=False
-)
+epita_connect_config = config.get('epita_connect', {})
+
+ENABLE_EPITA_CONNECT = epita_connect_config.get('enable', False)
 SOCIAL_AUTH_EPITA_SCOPE = ['email', 'epita']
 SOCIAL_AUTH_EPITA_EXTRA_DATA = ['promo']
-SOCIAL_AUTH_EPITA_KEY = config.get('epita_connect', 'auth_key', fallback=None)
-SOCIAL_AUTH_EPITA_SECRET = config.get(
-    'epita_connect', 'auth_secret', fallback=None
-)
+SOCIAL_AUTH_EPITA_KEY = epita_connect_config.get('auth_key')
+SOCIAL_AUTH_EPITA_SECRET = epita_connect_config.get('auth_secret')
+
 if ENABLE_EPITA_CONNECT:
     INSTALLED_APPS += ('social_django',)
     AUTHENTICATION_BACKENDS += ('epita_connect.backend.EpitaOpenIdConnect',)
