@@ -9,16 +9,20 @@
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="navbar-nav gap-2 me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link {% active '^/random' %}" href="{% url 'random_quotes' %}">Au hasard</a>
+          {% active '^/random' as is_active %}
+          <a class="nav-link {% if is_active %}active rounded bg-opacity-10 bg-secondary{% endif %}" href="{% url 'random_quotes' %}">Au hasard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% active '^/last' %}" href="{% url 'last_quotes' %}">Dernières</a>
+          {% active '^/last' as is_active %}
+          <a class="nav-link {% if is_active %}active rounded bg-opacity-10 bg-secondary{% endif %}" href="{% url 'last_quotes' %}">Dernières</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% active '^/top' %}" href="{% url 'top_quotes' %}">Meilleures</a>
+          {% active '^/top' as is_active %}
+          <a class="nav-link {% if is_active %}active rounded bg-opacity-10 bg-secondary{% endif %}" href="{% url 'top_quotes' %}">Meilleures</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% active '^/add' %}" href="{% url 'add_quote' %}">Ajouter</a>
+          {% active '^/add' as is_active %}
+          <a class="nav-link {% if is_active %}active rounded bg-opacity-10 bg-secondary{% endif %}" href="{% url 'add_quote' %}">Ajouter</a>
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item dropdown">
@@ -36,10 +40,12 @@
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link {% active '^/accounts/login' %}" href="{% url 'login' %}">Connexion</a>
+          {% active '^/accounts/login' as is_active %}
+          <a class="nav-link {% if is_active %}active rounded bg-opacity-10 bg-secondary{% endif %}" href="{% url 'login' %}">Connexion</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% active '^/accounts/register' %}" href="{% url 'register' %}">Inscription</a>
+          {% active '^/accounts/register' as is_active %}
+          <a class="nav-link {% if is_active %}active rounded bg-opacity-10 bg-secondary{% endif %}" href="{% url 'register' %}">Inscription</a>
         </li>
         {% endif %}
         <li>
