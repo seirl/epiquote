@@ -22,7 +22,7 @@
       </div>
     </form>
   </div>
-  {% if settings.ENABLE_EPITA_CONNECT %}
+  {% if ENABLE_EPITA_CONNECT %}
     <div class="col-md-5 offset-md-1">
       <h3>Avec un compte CRI</h3>
         <a href="{% url 'social:begin' 'epita' %}"
