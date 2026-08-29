@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.syndication.views import Feed
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -67,11 +67,17 @@ class HomeQuotes(QuoteListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['top'] = (
-            Quote.objects.seen_by(self.request.user)
-            .prefetch_related('fans')
-            .order_by('-score')[: settings.QUOTES_MAX_PAGE_HOME]
-        )
+        user = self.request.user
+        top_qs = Quote.objects.seen_by(user).prefetch_related('fans')
+        if user and user.is_authenticated:
+            top_qs = top_qs.prefetch_related(
+                Prefetch(
+                    'votes',
+                    queryset=QuoteVote.objects.filter(user=user),
+                    to_attr='user_vote_list'
+                )
+            )
+        context['top'] = top_qs.order_by('-score')[: settings.QUOTES_MAX_PAGE_HOME]
         return context
 
 
